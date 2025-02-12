@@ -1,6 +1,6 @@
 import React from 'react'
 
-const VærPage = () => {
+const VærDashboard = () => {
   return (
     <div>
       VærPage
@@ -8,4 +8,4 @@ const VærPage = () => {
   )
 }
 
-export default VærPage
+export default VærDashboard
