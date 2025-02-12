@@ -7,7 +7,7 @@ export default function Home() {
         <li><Link href="/generelt">Generelt</Link></li>
         <li><Link href="/helse">Helse</Link></li>
         <li><Link href="/login">Login</Link></li>
-        <li><Link href="/weather">Vær</Link></li>
+        <li><Link href="/weather">Var</Link></li>
       </ul>
     </div>
   )
