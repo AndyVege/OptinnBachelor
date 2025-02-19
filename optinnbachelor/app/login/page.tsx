@@ -1,11 +1,24 @@
-import React from 'react'
+"use client"
+import Navbar from "../Components/loginNavbar";
+import { useState } from "react";
 
-const LoginPage = () => {
-  return (
+
+export default function Home() {
+  const [activeTab, setActiveTab] = useState("Generelt");
+  
+
+const renderDashboard = () => {
+    switch (activeTab) {
+      case "Login":
+    }
+  }
+
+  return(
     <div>
-      LoginPage
+     <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+     <div>hello</div>
     </div>
   )
-}
+};
 
-export default LoginPage
+
