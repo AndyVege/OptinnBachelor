@@ -1,6 +1,6 @@
 import React from 'react'
 
-const helsePage = () => {
+const HelseDashboard = () => {
   return (
     <div>
       helsepage
@@ -8,4 +8,4 @@ const helsePage = () => {
   )
 }
 
-export default helsePage
+export default HelseDashboard

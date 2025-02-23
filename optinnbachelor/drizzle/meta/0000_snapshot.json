@@ -1,0 +1,95 @@
+{
+  "id": "0bf3940e-04c5-4d1e-8a21-b55f4bb5f22a",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.befolkning": {
+      "name": "befolkning",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "postNr": {
+          "name": "postNr",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "år": {
+          "name": "år",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "antall": {
+          "name": "antall",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "befolkning_postNr_kommune_postNr_fk": {
+          "name": "befolkning_postNr_kommune_postNr_fk",
+          "tableFrom": "befolkning",
+          "tableTo": "kommune",
+          "columnsFrom": [
+            "postNr"
+          ],
+          "columnsTo": [
+            "postNr"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kommune": {
+      "name": "kommune",
+      "schema": "",
+      "columns": {
+        "postNr": {
+          "name": "postNr",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "kommune": {
+          "name": "kommune",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
