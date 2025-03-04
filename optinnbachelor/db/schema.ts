@@ -1,16 +1,34 @@
-import { pgTable, serial ,text, integer } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, integer, jsonb } from "drizzle-orm/pg-core";
 
-// Define the Kommune table
-export const Kommune = pgTable("kommune", {
-  postNr: text("postNr").primaryKey(),
-  kommune: text("kommune").notNull(),
+export const Kommune = pgTable("Kommune", {
+  kommuneId: varchar("kommuneId").notNull().primaryKey(),
+  kommunenavn: varchar("kommunenavn").notNull(),
 });
 
-// Define the Befolkning table with a foreign key reference to Kommune
-export const Befolkning = pgTable("befolkning", {
-  id: serial("id").primaryKey(),
-  postNr: text("postNr").notNull().references(() => Kommune.postNr, { onDelete: "cascade" }),
+export const Befolkning = pgTable("Befolkning", {
+  befolkningId: integer("befolkning_id").primaryKey(),
+  kommuneId: varchar("kommuneId").references(() => Kommune.kommuneId, { onDelete: "cascade" }).notNull(),
   år: integer("år").notNull(),
-  antall: integer("antall").notNull(),
+  antallBefolkning: integer("antall_befolkning").notNull(),
+  født: integer("født").notNull(),
+  døde: integer("døde").notNull(),
+  aldersfordeling: jsonb("aldersfordeling"),
 });
 
+export const Bedrift = pgTable("Bedrift", {
+  bedriftId: integer("bedriftId").primaryKey(),
+  kommuneId: varchar("kommuneId").references(() => Kommune.kommuneId, { onDelete: "cascade" }).notNull(),
+  år: integer("år").notNull(),
+  antallBedrifter: integer("antallBedrifter").notNull(),
+  fordeling: jsonb("fordeling").notNull(),
+});
+
+export const Arbeidsledighet = pgTable("Arbeidsledighet", {
+  arbeidsledighetId: integer("arbeidsledighet_id").primaryKey(),
+  kommuneId: varchar("kommuneId").references(() => Kommune.kommuneId, { onDelete: "cascade" }).notNull(),
+  år: integer("år").notNull(),
+  antallArbeidsledighet: integer("antallArbeidsledighet").notNull(),
+  antallMenn: integer("antallMenn").notNull(),
+  antallKvinner: integer("antallKvinner").notNull(),
+  aldersfordeling: jsonb("aldersfordeling").notNull(),
+});
