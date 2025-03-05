@@ -4,7 +4,7 @@
 import Navbar from "./Components/navbar";
 import { useState } from "react";
 import GenereltDashboard from "./Components/Category/generelt"; 
-import HelseDashboard from "./Components/Category/helse/helse"; 
+import HelseDashboard from "./Components/Category/helse/page"; 
 import VærDashboard from "./Components/Category/vær"; 
 
 
