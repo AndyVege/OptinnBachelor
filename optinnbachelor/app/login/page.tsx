@@ -1,11 +1,9 @@
 import React from 'react'
 
-const LoginPage = () => {
+export default function LoginPage() {
   return (
-    <div>
-      LoginPage
+    <div className="bg-gray-100 p-6 rounded-xl shadow-md">
+      hello
     </div>
   )
 }
-
-export default LoginPage
