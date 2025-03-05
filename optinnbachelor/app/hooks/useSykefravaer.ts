@@ -50,7 +50,6 @@ const useSykefravaer = () => {
 
         const rawData = await response.json();
 
-        // Pass på at du bruker riktig struktur fra JSON
         const formattedData: SykefravaerData[] = [
           {
             kvartal: rawData.dimension.Tid.category.label['2024K3'],
