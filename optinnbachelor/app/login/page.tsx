@@ -25,6 +25,7 @@ const renderDashboard = () => {
         <div className="bg-[#1E3528] rounded-[30px] shadow-md p-6 h-[40rem] w-[35rem] flex flex-col items-center justify-center">
           <div className="text-8xl font-bold font-san text-white mb-10">
             Optinn
+            
           </div>
           <div className="bg-white rounded-[30px] shadow-md p-10 w-[28rem] h-[26rem] flex flex-col items-center">
           {/* Brukernavn Input */}
