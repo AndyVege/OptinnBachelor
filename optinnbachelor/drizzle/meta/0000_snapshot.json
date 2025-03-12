@@ -1,5 +1,5 @@
 {
-  "id": "c730724c-70dc-4cea-a877-2d5568374f28",
+  "id": "7766aa3a-1994-4723-bf5b-3abe0c4a4841",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,13 +10,13 @@
       "columns": {
         "arbeidsledighet_id": {
           "name": "arbeidsledighet_id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true
         },
-        "kommune_id": {
-          "name": "kommune_id",
-          "type": "integer",
+        "kommuneId": {
+          "name": "kommuneId",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
@@ -26,20 +26,20 @@
           "primaryKey": false,
           "notNull": true
         },
-        "antall_arbeidsledighet": {
-          "name": "antall_arbeidsledighet",
+        "antallArbeidsledighet": {
+          "name": "antallArbeidsledighet",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "antall_menn": {
-          "name": "antall_menn",
+        "antallMenn": {
+          "name": "antallMenn",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "antall_kvinner": {
-          "name": "antall_kvinner",
+        "antallKvinner": {
+          "name": "antallKvinner",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -53,12 +53,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "Arbeidsledighet_kommune_id_Kommune_kommuneId_fk": {
-          "name": "Arbeidsledighet_kommune_id_Kommune_kommuneId_fk",
+        "Arbeidsledighet_kommuneId_Kommune_kommuneId_fk": {
+          "name": "Arbeidsledighet_kommuneId_Kommune_kommuneId_fk",
           "tableFrom": "Arbeidsledighet",
           "tableTo": "Kommune",
           "columnsFrom": [
-            "kommune_id"
+            "kommuneId"
           ],
           "columnsTo": [
             "kommuneId"
@@ -77,15 +77,15 @@
       "name": "Bedrift",
       "schema": "",
       "columns": {
-        "bedrift_id": {
-          "name": "bedrift_id",
-          "type": "serial",
+        "bedriftId": {
+          "name": "bedriftId",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true
         },
-        "kommune_id": {
-          "name": "kommune_id",
-          "type": "integer",
+        "kommuneId": {
+          "name": "kommuneId",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
@@ -95,8 +95,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "antall_bedrift": {
-          "name": "antall_bedrift",
+        "antallBedrifter": {
+          "name": "antallBedrifter",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -110,12 +110,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "Bedrift_kommune_id_Kommune_kommuneId_fk": {
-          "name": "Bedrift_kommune_id_Kommune_kommuneId_fk",
+        "Bedrift_kommuneId_Kommune_kommuneId_fk": {
+          "name": "Bedrift_kommuneId_Kommune_kommuneId_fk",
           "tableFrom": "Bedrift",
           "tableTo": "Kommune",
           "columnsFrom": [
-            "kommune_id"
+            "kommuneId"
           ],
           "columnsTo": [
             "kommuneId"
@@ -136,13 +136,13 @@
       "columns": {
         "befolkning_id": {
           "name": "befolkning_id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": true,
           "notNull": true
         },
-        "kommune_id": {
-          "name": "kommune_id",
-          "type": "integer",
+        "kommuneId": {
+          "name": "kommuneId",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
@@ -179,12 +179,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "Befolkning_kommune_id_Kommune_kommuneId_fk": {
-          "name": "Befolkning_kommune_id_Kommune_kommuneId_fk",
+        "Befolkning_kommuneId_Kommune_kommuneId_fk": {
+          "name": "Befolkning_kommuneId_Kommune_kommuneId_fk",
           "tableFrom": "Befolkning",
           "tableTo": "Kommune",
           "columnsFrom": [
-            "kommune_id"
+            "kommuneId"
           ],
           "columnsTo": [
             "kommuneId"
