@@ -1,6 +1,6 @@
 "use client"
 
-
+import NavbarL from "./ui/loginNavbar";
 import Navbar from "./ui/navbar";
 import { useState } from "react";
 import GenereltDashboard from "./Components/Category/generelt"; 

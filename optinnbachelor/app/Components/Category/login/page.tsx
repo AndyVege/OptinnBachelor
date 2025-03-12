@@ -1,5 +1,5 @@
 "use client"
-import Navbar from "../Components/loginNavbar";
+import NavbarL from "../../../ui/loginNavbar";
 import { useState } from "react";
 import Link from "next/link"
 ImportIcon
@@ -19,7 +19,7 @@ const renderDashboard = () => {
 
   return(
     <div>
-    <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+    <NavbarL activeTab={activeTab} setActiveTab={setActiveTab} />
     <div>
       <div className="p-10 grid grid-cols-1 place-items-center gap-6">
         <div className="bg-[#1E3528] rounded-[30px] shadow-md p-6 h-[40rem] w-[35rem] flex flex-col items-center justify-center">

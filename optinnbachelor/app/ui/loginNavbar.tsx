@@ -5,7 +5,7 @@ type NavbarProps = {
     activeTab: string;
     setActiveTab: (tab: string) => void;
   };
-const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
+const NavbarL = ({ activeTab, setActiveTab }: NavbarProps) => {
   return (
     <nav className="bg-[#1E3528] text-white flex items-center justify-between py-4 px-10 rounded-[20px]">
       <div className="text-3xl font-bold font-sans">Optinn</div>
@@ -16,6 +16,6 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
     </nav>
   );
 };
-export default Navbar;
+export default NavbarL;
 
 
