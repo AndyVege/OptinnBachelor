@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "lucide-react": "^0.475.0"
+    "lucide-react": "^0.475.0",
+    "react": "^19.0.0"
   }
 }
