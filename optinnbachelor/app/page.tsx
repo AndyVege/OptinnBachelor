@@ -7,7 +7,6 @@ import GenereltDashboard from "./Components/Category/generelt";
 import HelseDashboard from "./Components/Category/helse/page"; 
 import VærDashboard from "./Components/Category/vær/page"; 
 
-
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Generelt");
 
