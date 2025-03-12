@@ -1,11 +1,11 @@
 "use client"
 
 
-import Navbar from "./Components/navbar";
+import Navbar from "./ui/navbar";
 import { useState } from "react";
 import GenereltDashboard from "./Components/Category/generelt"; 
-import HelseDashboard from "./Components/Category/helse"; 
-import VærDashboard from "./Components/Category/vær"; 
+import HelseDashboard from "./Components/Category/helse/page"; 
+import VærDashboard from "./Components/Category/vær/page"; 
 
 
 export default function Home() {
