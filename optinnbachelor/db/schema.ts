@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, integer, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, integer, jsonb, timestamp, text} from "drizzle-orm/pg-core";
 
 export const Kommune = pgTable("Kommune", {
   kommuneId: varchar("kommuneId").notNull().primaryKey(),
@@ -31,4 +31,17 @@ export const Arbeidsledighet = pgTable("Arbeidsledighet", {
   antallMenn: integer("antallMenn").notNull(),
   antallKvinner: integer("antallKvinner").notNull(),
   aldersfordeling: jsonb("aldersfordeling").notNull(),
+});
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: varchar("username", { length: 255 }).notNull().unique(),
+  // Store hashed passwords here (never plaintext!)
+  password: text("password").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
