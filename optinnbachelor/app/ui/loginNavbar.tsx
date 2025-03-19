@@ -1,5 +1,6 @@
 
-import { Settings ,Bell} from 'lucide-react/dist/lucide-react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell,faGear } from "@fortawesome/free-solid-svg-icons";
 
 type NavbarProps = {
     activeTab: string;
@@ -11,7 +12,7 @@ const NavbarL = ({ activeTab, setActiveTab }: NavbarProps) => {
       <div className="text-3xl font-bold font-sans">Optinn</div>
 
       <div className="flex space-x-5 items-center">
-        <Settings />
+        <FontAwesomeIcon className="w-6 h-6" icon={faGear} />
       </div>
     </nav>
   );

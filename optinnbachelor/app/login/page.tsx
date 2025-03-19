@@ -1,9 +1,11 @@
 "use client"
-import NavbarL from "../../../ui/loginNavbar";
+import NavbarL from "../ui/loginNavbar";
 import { useState } from "react";
 import Link from "next/link"
-ImportIcon
-  import { ImportIcon, UserIcon, LockIcon} from "lucide-react/dist/lucide-react";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser,faLock} from "@fortawesome/free-solid-svg-icons";
+
 
 
 
@@ -30,7 +32,9 @@ const renderDashboard = () => {
           <div className="bg-white rounded-[30px] shadow-md p-10 w-[28rem] h-[26rem] flex flex-col items-center">
           {/* Brukernavn Input */}
           <div className="flex items-center bg-gray-300 rounded-full p-4 w-full mb-8">
-            <span className="text-gray-600 text-xl ml-2"><UserIcon></UserIcon></span> {/* Ikon fra lucide-react */}
+            <span className="text-gray-600 text-xl ml-2">
+              <FontAwesomeIcon icon={faUser} />
+            </span> 
             <input 
               type="text" 
               placeholder="Skriv brukernavn" 
@@ -40,7 +44,9 @@ const renderDashboard = () => {
 
           {/* Passord Input */}
           <div className="flex items-center bg-gray-300 rounded-full p-4 w-full mb-4">
-            <span className="text-gray-600 text-xl ml-2"><LockIcon></LockIcon></span> {/* Ikon fra lucide-react */}
+            <span className="text-gray-600 text-xl ml-2">
+              <FontAwesomeIcon icon={faLock} />
+            </span> 
             <input 
               type="password" 
               placeholder="Skriv passord" 
