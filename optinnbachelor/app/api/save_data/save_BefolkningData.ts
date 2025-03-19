@@ -1,5 +1,5 @@
 import { db } from "@/db"; // Import the database connection
-import { Kommune , Befolkning} from "@/db/schema";
+import { Kommune , Befolkning} from "@/db/nsb/schema";
 import { fetch_BefolkningData } from "../fetch_data/fetch_BefolkningData";
 
 

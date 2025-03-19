@@ -6,13 +6,17 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx ./db/migrate.ts"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "dotenv": "^16.4.7",
+    "@neondatabase/serverless": "^0.10.4",
+    "drizzle-kit": "^0.30.5",
     "drizzle-orm": "^0.39.3",
+    "esbuild": "^0.25.1",
     "next": "15.1.7",
     "pg": "^8.13.3",
     "react": "^19.0.0",
@@ -25,7 +29,7 @@
     "@types/pg": "^8.11.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "drizzle-kit": "^0.30.4",
+    "dotenv": "^16.4.7",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "postcss": "^8",

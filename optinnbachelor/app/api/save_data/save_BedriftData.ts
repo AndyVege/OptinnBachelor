@@ -1,5 +1,5 @@
 import { db } from "@/db"; 
-import { Bedrift } from "@/db/schema";
+import { Bedrift } from "@/db/nsb/schema";
 import { fetch_BedriftData } from "../fetch_data/fetch_BedriftData";
 
 export async function save_BedriftData(): Promise<boolean> {

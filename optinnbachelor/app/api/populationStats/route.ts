@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { Kommune,Befolkning, Bedrift} from "@/db/schema";
+import { Kommune,Befolkning, Bedrift} from "@/db/nsb/schema";
 import { and, eq, gte, lte, sql ,desc} from "drizzle-orm";
 
 async function getKommuneNames() {
