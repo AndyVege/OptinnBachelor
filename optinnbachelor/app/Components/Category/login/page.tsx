@@ -3,7 +3,7 @@ import NavbarL from "../../../ui/loginNavbar";
 import { useState } from "react";
 import Link from "next/link"
 ImportIcon
-  import { ImportIcon, UserIcon, LockIcon} from "lucide-react";
+  import { ImportIcon, UserIcon, LockIcon} from "lucide-react/dist/lucide-react";
 
 
 

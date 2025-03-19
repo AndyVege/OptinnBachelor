@@ -1,5 +1,5 @@
 
-import { Settings ,Bell} from 'lucide-react';
+import { Settings ,Bell} from 'lucide-react/dist/lucide-react';
 
 type NavbarProps = {
     activeTab: string;

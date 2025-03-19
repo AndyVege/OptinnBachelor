@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPerson, faPersonDress} from "@fortawesome/free-solid-svg-icons";
 import SelectMenu from '../selectMenu';
-import { Index } from 'drizzle-orm/mysql-core';
+
 
 const data = [
   { year: '2021', value: 20 },
@@ -255,7 +255,7 @@ console.log(pieData)
                   <div className="flex flex-col gap-2">
                     {pieData2.map((item, index) => (
                       <div key={index} className="flex items-center gap-2">
-                        <div className="w-4 h-4" style={{ backgroundColor: item.color[index] }}></div>
+                        <div className="w-4 h-4" style={{ backgroundColor: item.color }}></div>
                         <p className="text-sm">{item.name}</p>
                       </div>
                     ))}
