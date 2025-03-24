@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPerson, faPersonDress} from "@fortawesome/free-solid-svg-icons";
 import SelectMenu from '../selectMenu';
+import { signOut, useSession } from "next-auth/react";
 
 
 const data = [
@@ -20,6 +21,7 @@ const data3 = [
   {name: '36-55',Men: 2000,Female: 9800},
   {name: '55-64',Men: 2780,Female: 3908},
 ];
+
 
 const colorPopulation = ["#0E1915","#2F3E34","#7DA37A","#5C8B5E","#2E3D2F"]
 const colorCompany = ['#BCE77B','#366249','#1E3528','#E1DCD5']
@@ -46,6 +48,8 @@ const [Last5YearsCompany, setLast5YearCompany] = useState<{
   year: number;
 }[]>([]);
 
+const { data: session,status } = useSession()
+
 // Fetch data on selectedYear or selectedKommune change
 const fetchData = useCallback(async () => {
   try {
@@ -67,6 +71,7 @@ const fetchData = useCallback(async () => {
 useEffect(() => {
   fetchData();
 }, [fetchData]);
+
 const optionListKommune : string[] = optionsKommune.map(option => option.kommuneNavn)
 const optionListYear : number[] = optionsYear.map(option => option.year)
 
@@ -86,10 +91,11 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
       color: colorCompany[index % colorCompany.length] // Assign colors cyclically
     }))
   : [];
-console.log(pieData)
+
   return (
-    <div className="py-5">
-      <h2 className='font-extrabold text-5xl'>Hello, Musdafa!</h2>
+    <div>
+      <h2 className='font-extrabold mt-5 text-5xl'>Hello, {session?.user?.name}</h2>
+      <button onClick={() => signOut()}>signOut</button>
       <h2 className='text-center font-extrabold text-4xl'>{selectedKommune}</h2>
       <div className='flex gap-2 w-60'>
         <SelectMenu options={optionListKommune} open={openKommune} setOpen={setOpenKommune} selected={selectedKommune} setSelected={setSelectedKommune} />
