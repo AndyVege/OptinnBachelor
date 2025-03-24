@@ -1,4 +1,4 @@
-import { db } from "@/db"; // Import the database connection
+import { dbGenerelt } from "@/db"; // Import the database connection
 import { Kommune , Befolkning} from "@/db/schema";
 import { fetch_BefolkningData } from "../fetch_data/fetch_BefolkningData";
 
@@ -54,8 +54,8 @@ export async function save_BefolkningData(): Promise<boolean> {
         
       }
       
-      await db.insert(Kommune).values(kommuneData).onConflictDoNothing();
-      await db.insert(Befolkning).values(befolkningData).onConflictDoNothing();
+      await dbGenerelt.insert(Kommune).values(kommuneData).onConflictDoNothing();
+      await dbGenerelt.insert(Befolkning).values(befolkningData).onConflictDoNothing();
   
       console.log("Data successfully inserted into the database.");
   

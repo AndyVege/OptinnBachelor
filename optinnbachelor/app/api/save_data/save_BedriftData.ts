@@ -1,4 +1,4 @@
-import { db } from "@/db"; 
+import { dbGenerelt } from "@/db"; 
 import { Bedrift } from "@/db/schema";
 import { fetch_BedriftData } from "../fetch_data/fetch_BedriftData";
 
@@ -62,7 +62,7 @@ export async function save_BedriftData(): Promise<boolean> {
       index += 170;  
     }
 
-    await db.insert(Bedrift).values(bedriftData).onConflictDoNothing();
+    await dbGenerelt.insert(Bedrift).values(bedriftData).onConflictDoNothing();
     console.log("Data successfully inserted into the database.");
 
     return true;

@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db";
+import { dbGenerelt } from "@/db";
 import { Kommune,Befolkning, Bedrift} from "@/db/schema";
 import { and, eq, gte, lte, sql ,desc} from "drizzle-orm";
 
 async function getKommuneNames() {
-  return await db.selectDistinct({
+  return await dbGenerelt.selectDistinct({
     kommuneNavn: Kommune.kommunenavn,
   })
   .from(Kommune)
 }
 
 async function getBedriftByLast5Years(year: number, kommune: any) {
-  return await db
+  return await dbGenerelt
     .select({
       antallBedrifter: Bedrift.antallBedrifter,
       fordeling: Bedrift.fordeling,
@@ -29,7 +29,7 @@ async function getBedriftByLast5Years(year: number, kommune: any) {
     .orderBy(Bedrift.år); // Order by year ascending
 }
 async function getBefolkningByLast5Years(year: number, kommune: any) {
-  return await db
+  return await dbGenerelt
     .select({
       antallBefolkning: Befolkning.antallBefolkning,
       fordeling: Befolkning.aldersfordeling,
@@ -48,15 +48,15 @@ async function getBefolkningByLast5Years(year: number, kommune: any) {
 }
 
 async function getAllTheYears() {
-  return await db
+  return await dbGenerelt
     .selectDistinct({ year: Befolkning.år }) // Selecting only the 'år' column
     .from(Befolkning)
     .orderBy(desc(Befolkning.år)); // Orders the years
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
+
+
   try {
     const { searchParams } = new URL(request.url);
     const year = Number(searchParams.get("year"));
