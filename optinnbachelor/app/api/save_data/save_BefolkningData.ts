@@ -2,10 +2,55 @@ import { dbGenerelt } from "@/db"; // Import the database connection
 import { Kommune , Befolkning} from "@/db/schema";
 import { fetch_BefolkningData } from "../fetch_data/fetch_BefolkningData";
 
+type FetchedData = {
+  data_Befolkning: {
+    dimension: {
+      Region: {
+        category: {
+          label: Record<string, string>;
+        };
+      };
+      Tid: {
+        category: {
+          label: Record<string, string>; 
+        };
+      };
+    };
+    value: number[];
+  };
+  data_Alderfordeling: {
+    dimension: {
+      Region: {
+        category: {
+          label: Record<string, string>;
+        };
+      };
+      Tid: {
+        category: {
+          label: Record<string, string>; 
+        };
+      };
+    };
+    value: number[];
+  };
 
+};
+type KommuneData={
+kommuneId:string
+kommunenavn:string
+}
+type BefolkningData={
+  befolkningId:number,
+  kommuneId: string,
+  år: number,  
+  antallBefolkning: number, 
+  født: number,  
+  døde: number,  
+  aldersfordeling:Record<string,number> , 
+}
 export async function save_BefolkningData(): Promise<boolean> {
   try {
-    const { data_Befolkning, data_Alderfordeling }: any = await fetch_BefolkningData();
+    const { data_Befolkning, data_Alderfordeling } : FetchedData = await fetch_BefolkningData();
 
       const regionCodes = Object.keys(data_Befolkning.dimension.Region.category.label);
       const regionNames = data_Befolkning.dimension.Region.category.label;
@@ -16,7 +61,7 @@ export async function save_BefolkningData(): Promise<boolean> {
       let index=0;
       let indexalder=0
       const kommuneData: any = [];
-      const befolkningData: any = [];
+      const befolkningData: BefolkningData[] = [];
   
 
       for (const regionCode of regionCodes) {

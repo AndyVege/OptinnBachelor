@@ -18,13 +18,20 @@ const signupSchema= z.object({
     password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   });
 
-function signUpPage() {
+  type LoginData = {
+    email: string;
+    password: string;
+    firstName:string;
+    lastName:string;
+  }
+
+function SignUpPage() {
 
     const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(signupSchema),});
     const [error, setError] = useState("");
     const router = useRouter();
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data:LoginData) => {
         setError("");
 
     const fullName = `${data.firstName} ${data.lastName}`;
@@ -128,4 +135,4 @@ function signUpPage() {
   )
 }
 
-export default signUpPage
+export default SignUpPage

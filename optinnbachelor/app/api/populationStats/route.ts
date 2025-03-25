@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { dbGenerelt } from "@/db";
 import { Kommune,Befolkning, Bedrift} from "@/db/schema";
-import { and, eq, gte, lte, sql ,desc} from "drizzle-orm";
+import { and, eq, gte, lte,desc} from "drizzle-orm";
 
 async function getKommuneNames() {
   return await dbGenerelt.selectDistinct({
@@ -10,7 +10,7 @@ async function getKommuneNames() {
   .from(Kommune)
 }
 
-async function getBedriftByLast5Years(year: number, kommune: any) {
+async function getBedriftByLast5Years(year: number, kommune: string | null ) {
   return await dbGenerelt
     .select({
       antallBedrifter: Bedrift.antallBedrifter,
@@ -28,7 +28,7 @@ async function getBedriftByLast5Years(year: number, kommune: any) {
     )
     .orderBy(Bedrift.år); // Order by year ascending
 }
-async function getBefolkningByLast5Years(year: number, kommune: any) {
+async function getBefolkningByLast5Years(year: number, kommune: string | null) {
   return await dbGenerelt
     .select({
       antallBefolkning: Befolkning.antallBefolkning,

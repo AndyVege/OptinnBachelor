@@ -1,4 +1,6 @@
-export async function fetch_BedriftData() {
+import { NextResponse } from "next/server";
+
+export async function POST() {
     const url_Bedrift = "https://data.ssb.no/api/v0/no/table/07091/";
  
     const payload_BedriftData = {
@@ -23,11 +25,12 @@ export async function fetch_BedriftData() {
             }
           
         const data_bedrift = await api_BedriftData.json(); 
-        return data_bedrift
+        return NextResponse.json(data_bedrift)
 
     } 
     catch (error) {
-        console.error("Error fetching data:", error);
-        return error;
+        return NextResponse.json(
+            { message: "Error fetching data", error: error instanceof Error ? error.message : "Unknown error" },
+            { status: 500 })
     }
 }

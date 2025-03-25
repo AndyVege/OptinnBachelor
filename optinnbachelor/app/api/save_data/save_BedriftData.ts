@@ -2,16 +2,38 @@ import { dbGenerelt } from "@/db";
 import { Bedrift } from "@/db/schema";
 import { fetch_BedriftData } from "../fetch_data/fetch_BedriftData";
 
+type FetchedData = {
+    dimension: {
+      Region: {
+        category: {
+          label: Record<string, string>;
+        };
+      };
+      Tid: {
+        category: {
+          label: Record<string, string>; 
+        };
+      };
+    };
+    value: number[];
+  }
+  type BedriftData = {
+    bedriftId:number,
+    kommuneId: string,
+    år: number,
+    antallBedrifter: number ,
+    fordeling: Record<string,number>,
+  }
 export async function save_BedriftData(): Promise<boolean> {
   try {
-    const apiData: any = await fetch_BedriftData(); 
+    const apiData:FetchedData = await fetch_BedriftData(); 
 
     const regionCodes = Object.keys(apiData.dimension.Region.category.label);
     const years = Object.keys(apiData.dimension.Tid.category.label);
     const values = apiData.value;
 
     let index=0;
-    const bedriftData: any = [];
+    const bedriftData: BedriftData[] = [];
 
     for (const regionCode of regionCodes) {
       const formattedRegionCode = regionCode.replace(/-/g, "_");
@@ -21,7 +43,7 @@ export async function save_BedriftData(): Promise<boolean> {
         const totalbedrifter=values[index]
         const uoppgittbedrifter=values[index+90]
 
-        const ansattFordeling_totalbedrifter : any = {
+        const ansattFordeling_totalbedrifter : Record<string,number> = {
             "ingen_ansatt": values[index+10] ?? 0,
             "1-4_ansatt": values[index+20] ?? 0,
             "5-9_ansatt": values[index+30] ?? 0,
@@ -32,7 +54,7 @@ export async function save_BedriftData(): Promise<boolean> {
             "250+_ansatt": values[index+80] ?? 0,
           };
 
-          const ansattFordeling_Uoppgittbedrifter : any = {
+          const ansattFordeling_Uoppgittbedrifter : Record<string,number> = {
             "ingen_ansatt": values[index+100] ?? 0,
             "1-4_ansatt": values[index+110] ?? 0,
             "5-9_ansatt": values[index+120] ?? 0,

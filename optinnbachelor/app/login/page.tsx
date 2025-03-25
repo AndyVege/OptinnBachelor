@@ -22,7 +22,12 @@ export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(schema) });
   const router = useRouter();
 
-  const onSubmit = async (data:any) => {
+  type LoginData = {
+    email: string;
+    password: string;
+  }
+  
+  const onSubmit = async (data : LoginData) => {
     const result = await signIn("credentials", {
       email: data.email,
       password: data.password,

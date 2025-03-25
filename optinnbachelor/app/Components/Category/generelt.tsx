@@ -38,17 +38,17 @@ const [openYear, setOpenYear] = useState<boolean>(false);
 
 const [Last5YearsPopulation, setLast5YearPopulation] = useState<{
   antallBefolkning: number;
-  fordeling: Record<string, any>; 
+  fordeling: Record<string, number>; 
   year: number;
 }[]>([]);
 
 const [Last5YearsCompany, setLast5YearCompany] = useState<{
   antallBedrifter: number;
-  fordeling: Record<string, any>; 
+  fordeling: Record<string, number>; 
   year: number;
 }[]>([]);
 
-const { data: session,status } = useSession()
+const { data: session } = useSession()
 
 // Fetch data on selectedYear or selectedKommune change
 const fetchData = useCallback(async () => {
