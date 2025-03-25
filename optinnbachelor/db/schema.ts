@@ -1,4 +1,30 @@
-import { pgTable, serial, varchar, integer, jsonb, timestamp, text} from "drizzle-orm/pg-core";
+import { pgTable, serial, numeric, text, varchar, jsonb, timestamp, integer } from "drizzle-orm/pg-core";
+import {relations} from "drizzle-orm"
+
+
+
+// MET Tables:
+
+// Table for locations
+export const locations = pgTable("locations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(), // Midlertidige steder: "Oslo", "Gjerdrum", "Larvik"
+  latitude: numeric("latitude").notNull(),
+  longitude: numeric("longitude").notNull(),
+});
+
+// Table for weather forecasts
+export const forecasts = pgTable("forecasts", {
+  id: serial("id").primaryKey(),
+  locationId: integer("location_id").references(() => locations.id).notNull(),
+  time: timestamp("time").notNull(),
+  temperature: numeric("temperature"), // grader C
+  windSpeed: numeric("wind_speed"), // m/s
+  precipitation: numeric("precipitation"), // mm
+  weatherSymbol: text("weather_symbol"), // MET Værsymbolerosv ugh
+});
+
+// SSB Tables:
 
 export const Kommune = pgTable("Kommune", {
   kommuneId: varchar("kommuneId").notNull().primaryKey(),
@@ -31,17 +57,4 @@ export const Arbeidsledighet = pgTable("Arbeidsledighet", {
   antallMenn: integer("antallMenn").notNull(),
   antallKvinner: integer("antallKvinner").notNull(),
   aldersfordeling: jsonb("aldersfordeling").notNull(),
-});
-
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: varchar("username", { length: 255 }).notNull().unique(),
-  // Store hashed passwords here (never plaintext!)
-  password: text("password").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
 });

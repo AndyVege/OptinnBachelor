@@ -1,4 +1,37 @@
-export async function fetch_BefolkningData() {
+type FetchedData = {
+  data_Befolkning: {
+    dimension: {
+      Region: {
+        category: {
+          label: Record<string, string>;
+        };
+      };
+      Tid: {
+        category: {
+          label: Record<string, string>; 
+        };
+      };
+    };
+    value: number[];
+  };
+  data_Alderfordeling: {
+    dimension: {
+      Region: {
+        category: {
+          label: Record<string, string>;
+        };
+      };
+      Tid: {
+        category: {
+          label: Record<string, string>; 
+        };
+      };
+    };
+    value: number[];
+  };
+
+};
+export async function fetch_BefolkningData(): Promise<FetchedData> {
   const url_Befolkning = "https://data.ssb.no/api/v0/no/table/06913/";
   const url_Alderfordelig="https://data.ssb.no/api/v0/no/table/07459/";
     
@@ -39,12 +72,13 @@ export async function fetch_BefolkningData() {
         response_Befolkning.json(),
         response_Alderfordeling.json(),
       ]);
-    return {data_Befolkning,data_Alderfordeling}
+
+    return {data_Befolkning,data_Alderfordeling} as FetchedData
     
       } 
   catch (error) {
     console.error("Error fetching data:", error);
-    return error
+    throw new Error("Failed to fetch population data");
   }
 }
     
