@@ -60,7 +60,7 @@ export async function save_BefolkningData(): Promise<boolean> {
 
       let index=0;
       let indexalder=0
-      const kommuneData: any = [];
+      const kommuneData: KommuneData[] = [];
       const befolkningData: BefolkningData[] = [];
   
 
