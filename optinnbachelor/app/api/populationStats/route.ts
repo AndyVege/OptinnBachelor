@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db";
+import { dbGenerelt } from "@/db";
 import { Kommune,Befolkning, Bedrift} from "@/db/schema";
-import { and, eq, gte, lte, sql ,desc} from "drizzle-orm";
+import { and, eq, gte, lte,desc} from "drizzle-orm";
 
 async function getKommuneNames() {
-  return await db.selectDistinct({
+  return await dbGenerelt.selectDistinct({
     kommuneNavn: Kommune.kommunenavn,
   })
   .from(Kommune)
 }
 
-async function getBedriftByLast5Years(year: number, kommune: any) {
-  return await db
+async function getBedriftByLast5Years(year: number, kommune: string | null ) {
+  const kommuneName = kommune ?? "";
+  return await dbGenerelt
     .select({
       antallBedrifter: Bedrift.antallBedrifter,
       fordeling: Bedrift.fordeling,
@@ -23,13 +24,14 @@ async function getBedriftByLast5Years(year: number, kommune: any) {
       and(
         gte(Bedrift.år, year - 4), // Year >= inputYear - 4
         lte(Bedrift.år, year), // Year <= inputYear
-        eq(Kommune.kommunenavn, kommune) // Filter by kommune name
+        eq(Kommune.kommunenavn, kommuneName) // Filter by kommune name
       )
     )
     .orderBy(Bedrift.år); // Order by year ascending
 }
-async function getBefolkningByLast5Years(year: number, kommune: any) {
-  return await db
+async function getBefolkningByLast5Years(year: number, kommune: string | null ) {
+  const kommuneName = kommune ?? "";
+  return await dbGenerelt
     .select({
       antallBefolkning: Befolkning.antallBefolkning,
       fordeling: Befolkning.aldersfordeling,
@@ -41,27 +43,25 @@ async function getBefolkningByLast5Years(year: number, kommune: any) {
       and(
         gte(Befolkning.år, year - 4), // Year >= inputYear - 4
         lte(Befolkning.år, year), // Year <= inputYear
-        eq(Kommune.kommunenavn, kommune) // Filter by kommune name
+        eq(Kommune.kommunenavn, kommuneName) // Filter by kommune name
       )
     )
     .orderBy(Befolkning.år); // Order by year ascending
 }
 
 async function getAllTheYears() {
-  return await db
+  return await dbGenerelt
     .selectDistinct({ year: Befolkning.år }) // Selecting only the 'år' column
     .from(Befolkning)
     .orderBy(desc(Befolkning.år)); // Orders the years
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
   try {
     const { searchParams } = new URL(request.url);
     const year = Number(searchParams.get("year"));
-    const kommune = searchParams.get("kommune");
-    // Fetch multiple queries
+    const kommune   = searchParams.get("kommune");
+  
     const [kommuneNames, befolkningByLast5Years,allTheYears,bedriftByLast5Years] = await Promise.all([
       getKommuneNames(),
       getBefolkningByLast5Years(year,kommune),

@@ -1,5 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
-
 export async function fetch_BedriftData() {
     const url_Bedrift = "https://data.ssb.no/api/v0/no/table/07091/";
  
