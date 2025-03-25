@@ -11,6 +11,7 @@ async function getKommuneNames() {
 }
 
 async function getBedriftByLast5Years(year: number, kommune: string | null ) {
+  const kommuneName = kommune ?? "";
   return await dbGenerelt
     .select({
       antallBedrifter: Bedrift.antallBedrifter,
@@ -23,12 +24,13 @@ async function getBedriftByLast5Years(year: number, kommune: string | null ) {
       and(
         gte(Bedrift.år, year - 4), // Year >= inputYear - 4
         lte(Bedrift.år, year), // Year <= inputYear
-        eq(Kommune.kommunenavn, kommune) // Filter by kommune name
+        eq(Kommune.kommunenavn, kommuneName) // Filter by kommune name
       )
     )
     .orderBy(Bedrift.år); // Order by year ascending
 }
-async function getBefolkningByLast5Years(year: number, kommune: string | null) {
+async function getBefolkningByLast5Years(year: number, kommune: string | null ) {
+  const kommuneName = kommune ?? "";
   return await dbGenerelt
     .select({
       antallBefolkning: Befolkning.antallBefolkning,
@@ -41,7 +43,7 @@ async function getBefolkningByLast5Years(year: number, kommune: string | null) {
       and(
         gte(Befolkning.år, year - 4), // Year >= inputYear - 4
         lte(Befolkning.år, year), // Year <= inputYear
-        eq(Kommune.kommunenavn, kommune) // Filter by kommune name
+        eq(Kommune.kommunenavn, kommuneName) // Filter by kommune name
       )
     )
     .orderBy(Befolkning.år); // Order by year ascending
@@ -55,13 +57,11 @@ async function getAllTheYears() {
 }
 
 export async function GET(request: Request) {
-
-
   try {
     const { searchParams } = new URL(request.url);
     const year = Number(searchParams.get("year"));
-    const kommune = searchParams.get("kommune");
-    // Fetch multiple queries
+    const kommune   = searchParams.get("kommune");
+  
     const [kommuneNames, befolkningByLast5Years,allTheYears,bedriftByLast5Years] = await Promise.all([
       getKommuneNames(),
       getBefolkningByLast5Years(year,kommune),
