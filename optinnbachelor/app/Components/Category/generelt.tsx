@@ -94,8 +94,7 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
 
   return (
     <div>
-      <h2 className='font-extrabold mt-5 text-5xl'>Hello, {session?.user?.name}</h2>
-      <button onClick={() => signOut()}>signOut</button>
+      <h2 className='font-extrabold mt-5 text-4xl'>Hello, {session?.user?.name}</h2>
       <h2 className='text-center font-extrabold text-4xl'>{selectedKommune}</h2>
       <div className='flex gap-2 w-60'>
         <SelectMenu options={optionListKommune} open={openKommune} setOpen={setOpenKommune} selected={selectedKommune} setSelected={setSelectedKommune} />
