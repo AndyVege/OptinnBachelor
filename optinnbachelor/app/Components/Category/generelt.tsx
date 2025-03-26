@@ -16,10 +16,10 @@ const data = [
 ];
 
 const data3 = [
-  {name: '18-24', Men: 4000,Female: 2400},
-  {name: '25-35',Men: 3000,Female: 1398,},
-  {name: '36-55',Men: 2000,Female: 9800},
-  {name: '55-64',Men: 2780,Female: 3908},
+  {name: '18-24', Menn: 4000,Kvinner: 2400},
+  {name: '25-35',Menn: 3000,Kvinner: 1398,},
+  {name: '36-55',Menn: 2000,Kvinner: 9800},
+  {name: '55-64',Menn: 2780,Kvinner: 3908},
 ];
 
 
@@ -94,7 +94,7 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
 
   return (
     <div>
-      <h2 className='font-extrabold mt-5 text-4xl'>Hello, {session?.user?.name}</h2>
+      <h2 className='font-extrabold mt-5 text-4xl'>Velkommen, {session?.user?.name}</h2>
       <h2 className='text-center font-extrabold text-4xl'>{selectedKommune}</h2>
       <div className='flex gap-2 w-60'>
         <SelectMenu options={optionListKommune} open={openKommune} setOpen={setOpenKommune} selected={selectedKommune} setSelected={setSelectedKommune} />
@@ -109,7 +109,7 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
 
           {/* Population */}
           <div className="bg-white rounded-[30px] shadow-md h-80 w-full py-5">
-          <h2 className="text-center text-3xl font-extrabold mb-4">Population</h2>
+          <h2 className="text-center text-3xl font-extrabold mb-4">Befolkning</h2>
 
 
           <div className="flex w-full h-3/4 border-slate-100 px-5">
@@ -119,11 +119,11 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
                 {/* Stats */}
                 <div className="flex gap-10 w-full ml-20">
                   <div className="text-center">
-                    <p className="text-sm font-bold">Total Population</p>
+                    <p className="text-sm font-bold">Totalt Befolkningstall</p>
                     <p className="text-xl font-bold"> {thisYearPopulationData?.antallBefolkning.toLocaleString()} </p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold">Population Growth Since Last Year</p>
+                    <p className="text-sm font-bold">Befolkningsvekst siden sist år</p>
                     {
                       Last5YearsPopulation.map((data) => {
                         const previousYearData = Last5YearsPopulation.find((prevData) => prevData.year === Number(selectedYear) - 1);
@@ -186,7 +186,7 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
 
           {/* Company Sector */}
           <div className="bg-white rounded-[30px] shadow-md h-80 w-full py-5">
-            <h2 className="text-center text-3xl font-extrabold mb-4">Company Sector</h2>
+            <h2 className="text-center text-3xl font-extrabold mb-4">Selskapssektor</h2>
 
             <div className="flex w-full h-3/4 border-slate-100 px-5">
               {/* Left Side - Stats & Area Chart */}
@@ -194,11 +194,11 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
                 {/* Stats */}
                 <div className="flex gap-10 w-full ml-20">
                   <div className="text-center">
-                    <p className="text-sm font-bold">Total Company</p>
+                    <p className="text-sm font-bold">Totalt antall selskaper</p>
                     <p className="text-xl font-bold">{thisYearCompanyData?.antallBedrifter.toLocaleString()}</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold">Company Growth Since Last Year</p>
+                    <p className="text-sm font-bold">Selskapsvekst siden i fjor</p>
 
                     {
                       Last5YearsCompany.map((data) => {
@@ -240,7 +240,7 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
               {/* Right Side - Pie Chart & Legend */}
               <div className="flex px-4 flex-col ">
                 <p className="text-lg font-semibold text-center">
-                  Number of companies by number of employees
+                Antall selskaper etter antall ansatte
                 </p>
 
                 <div className="flex gap-5 items-center">
@@ -274,7 +274,7 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
 
         {/* Right Section */}
         <div className="bg-white rounded-[30px] shadow-md h-full w-full flex  flex-col px-5 pt-5">
-          <h2 className="text-center text-3xl font-extrabold mb-4">Unemployment Statistics</h2>
+          <h2 className="text-center text-3xl font-extrabold mb-4">Arbeidsledighet</h2>
           <div id='line' className='w-full h-100'>
             <ResponsiveContainer width="100%" height={180}>
               <AreaChart data={data}  >
@@ -287,15 +287,15 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
 
           <div id="navbar" className='flex w-full h-50 text-center'>
                     <div className='flex flex-col w-1/3'>
-                      <p className="text-xs font-bold">Total Unemployment</p>
+                      <p className="text-xs font-bold">Total Arbeidsledighet</p>
                       <p className="text-l font-extrabold">20,000</p>
                     </div>
                     <div className='flex flex-col w-1/3'>
-                      <p className="text-xs font-bold">Unemployment Rate</p>
+                      <p className="text-xs font-bold">Arbeidsledighetsrate</p>
                       <p className="text-l font-extrabold">18%</p>
                     </div>
                     <div className='flex flex-col w-1/3'>
-                      <p className="text-xs font-bold">Unemployment Rate Compared To Last Year</p>
+                      <p className="text-xs font-bold">Arbeidsledighetsrate sammenlignet med sist år</p>
                       <p className="text-l font-extrabold text-green-500">-1,1 ↓</p>
                     </div>
           </div>
@@ -304,7 +304,7 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon icon={faPerson} color="#1E3528" size="4x" />
                 <div>
-                  <p className="font-bold">MEN</p>
+                  <p className="font-bold">MENN</p>
                   <p className="text-2xl font-extrabold">100000</p>
                 </div>
               </div>
@@ -312,7 +312,7 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
               <div className="flex items-center gap-2">
                 <FontAwesomeIcon icon={faPersonDress} color="#366249" size="4x" />
                 <div>
-                  <p className="font-bold">WOMEN</p>
+                  <p className="font-bold">KVINNER</p>
                   <p className="text-2xl font-extrabold">200000</p>
                 </div>
               </div>
@@ -323,8 +323,8 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
               <BarChart width={500} height={300} data={data3} >
                 <XAxis dataKey="name"  axisLine={false} tickLine={false} />
                 <Tooltip />
-                <Bar dataKey="Female"  radius={[5, 5, 0, 0]} fill="#366249" />
-                <Bar dataKey="Men"  radius={[5, 5, 0, 0]} fill="#1E3528" />
+                <Bar dataKey="Kvinner"  radius={[5, 5, 0, 0]} fill="#366249" />
+                <Bar dataKey="Menn"  radius={[5, 5, 0, 0]} fill="#1E3528" />
                 <Legend layout="horizontal" align="center" verticalAlign="top" />
               </BarChart>
             </ResponsiveContainer>
