@@ -42,10 +42,10 @@ export default function LoginPage() {
     }
   };
 
-  return(
+  return( 
    <div className="flex items-center justify-center min-h-screen">
-      <div className="bg-white p-8  rounded-2xl shadow-lg w-full max-w-md">
-        <h3 className="text-3xl font-semibold  text-[#1E3528]">Optinn</h3>  
+    <h3 className="absolute top-10 left-1/2 -translate-x-1/2 text-5xl font-bold text-[#1E3528]">Optinn</h3>
+      <div className="bg-white p-8  rounded-2xl shadow-lg w-full max-w-md"> 
         <h3 className="text-2xl text-center font-extrabold mb-12 text-[#1E3528]">Login</h3> 
         {error && <p className="text-red-500 text-center">{error}</p>}
         <form onSubmit={handleSubmit(onSubmit)}>
