@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPerson, faPersonDress} from "@fortawesome/free-solid-svg-icons";
 import SelectMenu from '../selectMenu';
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 
 const data = [
