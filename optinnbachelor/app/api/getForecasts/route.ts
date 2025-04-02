@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 
 export async function GET() {
   try {
-    // Hent alle locations fra databasen
+    // Hent alle stedene fra databasen
     const locationList = await dbGenerelt.select().from(locations);
     console.log("📍 Antall locations:", locationList.length);
 
