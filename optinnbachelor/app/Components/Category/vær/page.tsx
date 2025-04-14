@@ -12,6 +12,7 @@ import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headless
 import FlomProjeksjon from "./flomprojeksjon"; // Importer den nye flom-projeksjonskomponenten
 
 
+
 export default function Home() {
   const [locations] = useState([
     { id: 1, name: "Oslo" },
@@ -49,16 +50,22 @@ export default function Home() {
         </Listbox>
       </div>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
       <WeatherDisplay locationId={selectedLocationId} />
 
       {/* Legg til flomprojeksjons-komponenten under værdisplay */}
       <FlomProjeksjon />
 =======
+=======
+>>>>>>> Stashed changes
       <div className="flex gap-6">
         <WeatherDisplay locationId={selectedLocationId} />
         <FareIndikatorModul />
       </div>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     </main>
   );
