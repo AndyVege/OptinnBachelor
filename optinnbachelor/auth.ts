@@ -14,10 +14,6 @@ async function getUserFromDb(email: string): Promise<any> {
   return users[0] || null;
 }
 
-
-
-// Hash a password
-
 export const authOptions : NextAuthOptions = {
   adapter: DrizzleAdapter(dbUser),
   providers: [
@@ -71,7 +67,7 @@ export const authOptions : NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("SignIn Callback:", { user, account, profile });
+      console.log("SignIn Callback:", { user, account, profile ,email,credentials});
       return true;
     },
     async redirect({ url, baseUrl }) {

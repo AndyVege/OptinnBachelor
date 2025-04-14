@@ -1,12 +1,16 @@
 'use Client'
 import { AreaChart, PieChart,BarChart, XAxis,  ResponsiveContainer, Area, Tooltip, Pie, Cell, Legend, Bar, YAxis } from 'recharts';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPerson, faPersonDress} from "@fortawesome/free-solid-svg-icons";
 import SelectMenu from '../selectMenu';
-import { Index } from 'drizzle-orm/mysql-core';
+import { QueryFunctionContext, useQuery } from '@tanstack/react-query';
+import ClipLoader from 'react-spinners/ClipLoader';
+import { useSession } from 'next-auth/react';
 
-const data = [
+
+
+const datachart = [
   { year: '2021', value: 20 },
   { year: '2022', value: 25 },
   { year: '2023', value: 15 },
@@ -25,6 +29,8 @@ const colorPopulation = ["#0E1915","#2F3E34","#7DA37A","#5C8B5E","#2E3D2F"]
 const colorCompany = ['#BCE77B','#366249','#1E3528','#E1DCD5']
 
 const GenereltDashboard = () => {
+
+const { data : session} = useSession();
 
 const [optionsKommune, setOptionsKommune] = useState<{ kommuneNavn: string }[]>([]);
 const [optionsYear, setOptionsYear] = useState<{ year : number }[]>([]);
@@ -47,26 +53,33 @@ const [Last5YearsCompany, setLast5YearCompany] = useState<{
 }[]>([]);
 
 // Fetch data on selectedYear or selectedKommune change
-const fetchData = useCallback(async () => {
-  try {
-    const res = await fetch(`/api/populationStats?year=${selectedYear}&kommune=${selectedKommune}`);
-    const data = await res.json();
-    
-    // Only update state if the data is valid
-    if (data.kommuneNames && data.allTheYears && data.befolkningByLast5Years) {
-      setOptionsKommune(data.kommuneNames);
-      setOptionsYear(data.allTheYears);
-      setLast5YearPopulation(data.befolkningByLast5Years);
-      setLast5YearCompany(data.bedriftByLast5Years);
-    }
-  } catch (error) {
-    console.error("Error fetching stats:", error);
-  }
-}, [selectedYear, selectedKommune]);
+const fetchPopulationStats = async ({ queryKey }: QueryFunctionContext<(string | number)[]>) => {
+  const [_key, year, kommune] = queryKey;
+  const res = await fetch(`/api/populationStats?year=${year}&kommune=${kommune}`);
+  if (!res.ok) throw new Error("Failed to fetch population stats");
+  return res.json();
+};
+
+const { data : fetchedData , isLoading } = useQuery({
+  queryKey: ["populationStats", selectedYear, selectedKommune],
+  queryFn: fetchPopulationStats,
+  enabled: !!selectedYear && !!selectedKommune,
+  refetchOnWindowFocus: false,
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+
+});
+ 
 
 useEffect(() => {
-  fetchData();
-}, [fetchData]);
+  if (fetchedData) {
+    setOptionsKommune(fetchedData.kommuneNames);
+    setOptionsYear(fetchedData.allTheYears);
+    setLast5YearPopulation(fetchedData.befolkningByLast5Years);
+    setLast5YearCompany(fetchedData.bedriftByLast5Years);
+  }
+}, [fetchedData]);
+
 const optionListKommune : string[] = optionsKommune.map(option => option.kommuneNavn)
 const optionListYear : number[] = optionsYear.map(option => option.year)
 
@@ -83,58 +96,55 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
   const pieData2 = thisYearCompanyData?.fordeling ? Object.entries(thisYearCompanyData.fordeling).map(([ageGroup, value], index) => ({
       name: ageGroup,
       value,
-      color: colorCompany[index % colorCompany.length] // Assign colors cyclically
+      color: colorCompany[index % colorCompany.length]
     }))
   : [];
-console.log(pieData)
+
+
+if(isLoading){
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <ClipLoader size={100}  color="#1E3528" />
+    </div>
+  );
+}
   return (
     <div className="py-5">
-      <h2 className='font-extrabold text-5xl'>Hello, Musdafa!</h2>
-      <h2 className='text-center font-extrabold text-4xl'>{selectedKommune}</h2>
-      <div className='flex gap-2 w-60'>
+      <h2 className='font-extrabold text-3xl sm:text-4xl md:text-5xl'>Hello,{session?.user?.name}</h2>
+      <h2 className='text-center font-extrabold text-2xl sm:text-3xl md:text-4xl'>{selectedKommune}</h2>
+      <div className='flex flex-col sm:flex-row gap-2 w-full sm:w-60'>
         <SelectMenu options={optionListKommune} open={openKommune} setOpen={setOpenKommune} selected={selectedKommune} setSelected={setSelectedKommune} />
         <SelectMenu options={optionListYear} open={openYear} setOpen={setOpenYear} selected={selectedYear} setSelected={setSelectedYear} />
       </div>
       
-      <div className=" mt-5 grid grid-cols-3 gap-5">
+      <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-3">
 
         {/* Left Section (Two Rows) */}
-        <div className="col-span-2 grid grid-rows-2 gap-5">
+        <div className="lg:col-span-2 grid grid-rows-2 gap-3">
       
 
           {/* Population */}
           <div className="bg-white rounded-[30px] shadow-md h-80 w-full py-5">
-          <h2 className="text-center text-3xl font-extrabold mb-4">Population</h2>
+          <h2 className="text-center text-2xl md:text-3xl font-extrabold mb-4">Population</h2>
 
 
-          <div className="flex w-full h-3/4 border-slate-100 px-5">
+          <div className="flex w-full h-3/4 border-slate-100 px-5 flex-col lg:flex-row gap-4">
 
               {/* Left Side - Stats & Area Chart */}
-              <div className="w-1/2 flex flex-col items-center">
-                {/* Stats */}
-                <div className="flex gap-10 w-full ml-20">
+              <div className="lg:w-1/2 w-full flex flex-col items-center ">
+                <div className="flex flex-col sm:flex-row gap-5 w-full justify-evenly">
                   <div className="text-center">
                     <p className="text-sm font-bold">Total Population</p>
-                    <p className="text-xl font-bold"> {thisYearPopulationData?.antallBefolkning.toLocaleString()} </p>
+                    <p className="text-xl font-bold">{thisYearPopulationData?.antallBefolkning.toLocaleString()}</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold">Population Growth Since Last Year</p>
-                    {
-                      Last5YearsPopulation.map((data) => {
-                        const previousYearData = Last5YearsPopulation.find((prevData) => prevData.year === Number(selectedYear) - 1);
-
-                        if (!previousYearData) return null; // Ensure there's data for the previous year
-
-                        const percentageChange = ((data.antallBefolkning - previousYearData.antallBefolkning) / previousYearData.antallBefolkning) * 100;
-
-                        return data.year === selectedYear ? (
-                          <p key={data.year} className={`text-xl font-bold ${ percentageChange < 0 ? "text-red-500" : "text-green-500"  }`} >
-                            {percentageChange.toFixed(1)}% {percentageChange < 0 ? "↓" : "↑"}
-                          </p>
-                        ) : null;
-                      })
-                    }
-
+                    <p className="text-sm font-bold">Population Growth</p>
+                    {Last5YearsPopulation.map((data) => {
+                      const previous = Last5YearsPopulation.find(p => p.year === Number(selectedYear) - 1);
+                      if (!previous || data.year !== selectedYear) return null;
+                      const change = ((data.antallBefolkning - previous.antallBefolkning) / previous.antallBefolkning) * 100;
+                      return <p key={data.year} className={`text-xl font-bold ${change < 0 ? "text-red-500" : "text-green-500"}`}>{change.toFixed(1)}% {change < 0 ? "↓" : "↑"}</p>;
+                    })}
                   </div>
                 </div>
 
@@ -151,6 +161,7 @@ console.log(pieData)
                     <Area type="monotone" dataKey="antallBefolkning" stroke="#1E3528" fill="#1E3528" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
+
               </div>
 
               
@@ -186,6 +197,7 @@ console.log(pieData)
             <div className="flex w-full h-3/4 border-slate-100 px-5">
               {/* Left Side - Stats & Area Chart */}
               <div className="w-1/2 flex flex-col items-center">
+
                 {/* Stats */}
                 <div className="flex gap-10 w-full ml-20">
                   <div className="text-center">
@@ -195,7 +207,7 @@ console.log(pieData)
                   <div className="text-center">
                     <p className="text-sm font-bold">Company Growth Since Last Year</p>
 
-                    {
+                    { 
                       Last5YearsCompany.map((data) => {
                         const previousYearData = Last5YearsCompany.find((prevData) => prevData.year === Number(selectedYear) - 1);
 
@@ -255,24 +267,26 @@ console.log(pieData)
                   <div className="flex flex-col gap-2">
                     {pieData2.map((item, index) => (
                       <div key={index} className="flex items-center gap-2">
-                        <div className="w-4 h-4" style={{ backgroundColor: item.color[index] }}></div>
+                        <div className="w-4 h-4" style={{ backgroundColor: item.color }}></div>
                         <p className="text-sm">{item.name}</p>
                       </div>
                     ))}
                   </div>
+
                 </div>
               </div>
+        
             </div>
           </div>
 
         </div>
 
         {/* Right Section */}
-        <div className="bg-white rounded-[30px] shadow-md h-full w-full flex  flex-col px-5 pt-5">
-          <h2 className="text-center text-3xl font-extrabold mb-4">Unemployment Statistics</h2>
+        <div className="bg-white rounded-[30px] shadow-md p-5 flex flex-col gap-5">
+          <h2 className="text-center text-2xl md:text-3xl font-extrabold">Unemployment Statistics</h2>
           <div id='line' className='w-full h-100'>
             <ResponsiveContainer width="100%" height={180}>
-              <AreaChart data={data}  >
+              <AreaChart data={datachart}  >
                 <XAxis dataKey="year" axisLine={false} tickLine={false} interval={'preserveStartEnd'} />
                 <Tooltip />
                 <Area type="linear" dataKey="value" stroke="#1E3528" fill="#1E3528" strokeWidth={2} />
@@ -280,16 +294,16 @@ console.log(pieData)
             </ResponsiveContainer>
           </div>
 
-          <div id="navbar" className='flex w-full h-50 text-center'>
-                    <div className='flex flex-col w-1/3'>
+          <div className='flex w-full h-50 text-center'>
+                    <div className='w-1/3'>
                       <p className="text-xs font-bold">Total Unemployment</p>
                       <p className="text-l font-extrabold">20,000</p>
                     </div>
-                    <div className='flex flex-col w-1/3'>
+                    <div className='w-1/3'>
                       <p className="text-xs font-bold">Unemployment Rate</p>
                       <p className="text-l font-extrabold">18%</p>
                     </div>
-                    <div className='flex flex-col w-1/3'>
+                    <div className='w-1/3'>
                       <p className="text-xs font-bold">Unemployment Rate Compared To Last Year</p>
                       <p className="text-l font-extrabold text-green-500">-1,1 ↓</p>
                     </div>

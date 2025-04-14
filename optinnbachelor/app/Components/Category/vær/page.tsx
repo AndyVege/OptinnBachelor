@@ -1,8 +1,11 @@
-import React, { useState } from "react";
-import WeatherDisplay from "../../værDisplay";  // Vær at denne stien er riktig
-import SelectMenu from "../../selectMenu";
+import React, { useState } from 'react'
+import WeatherDisplay from "../../værDisplay";
+import FareIndikatorModul from '../../FareIndikatorModul';
+import SelectMenu from '../../selectMenu';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 import FlomProjeksjon from "./flomprojeksjon"; // Importer den nye flom-projeksjonskomponenten
+
+
 
 export default function Home() {
   const [locations] = useState([
@@ -41,10 +44,15 @@ export default function Home() {
         </Listbox>
       </div>
 
-      <WeatherDisplay locationId={selectedLocationId} />
+      <div className="flex gap-6">
+        <WeatherDisplay locationId={selectedLocationId} />
+        <FareIndikatorModul />
+      </div>
 
       {/* Legg til flomprojeksjons-komponenten under værdisplay */}
       <FlomProjeksjon />
+
+      
     </main>
   );
 }
