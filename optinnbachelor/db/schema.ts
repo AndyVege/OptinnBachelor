@@ -1,5 +1,5 @@
 import { pgTable, serial, numeric, text, varchar, jsonb, timestamp, integer } from "drizzle-orm/pg-core";
-import {relations} from "drizzle-orm"
+
 
 
 

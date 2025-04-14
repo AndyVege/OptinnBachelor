@@ -1,3 +1,4 @@
+
 import { NextResponse } from "next/server";
 import { save_BefolkningData } from "@/app/api/save_data/save_BefolkningData";
 import { save_BedriftData } from "../save_data/save_BedriftData";
