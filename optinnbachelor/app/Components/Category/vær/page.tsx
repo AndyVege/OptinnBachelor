@@ -1,13 +1,7 @@
-<<<<<<< Updated upstream
-import React, { useState } from "react";
-import WeatherDisplay from "../../værDisplay";  // Vær at denne stien er riktig
-import SelectMenu from "../../selectMenu";
-=======
 import React, { useState } from 'react'
 import WeatherDisplay from "../../værDisplay";
 import FareIndikatorModul from '../../FareIndikatorModul';
 import SelectMenu from '../../selectMenu';
->>>>>>> Stashed changes
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 import FlomProjeksjon from "./flomprojeksjon"; // Importer den nye flom-projeksjonskomponenten
 
@@ -49,24 +43,16 @@ export default function Home() {
           </div>
         </Listbox>
       </div>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 
-      <WeatherDisplay locationId={selectedLocationId} />
-
-      {/* Legg til flomprojeksjons-komponenten under værdisplay */}
-      <FlomProjeksjon />
-=======
-=======
->>>>>>> Stashed changes
       <div className="flex gap-6">
         <WeatherDisplay locationId={selectedLocationId} />
         <FareIndikatorModul />
       </div>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
+      {/* Legg til flomprojeksjons-komponenten under værdisplay */}
+      <FlomProjeksjon />
+
+      
     </main>
   );
 }
