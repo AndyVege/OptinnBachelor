@@ -15,7 +15,7 @@ CLIENT_ID = os.getenv("FROST_CLIENT_ID", "c95efd44-7968-4b65-8ded-38ddb3fbc712")
 CLIENT_SECRET = os.getenv("FROST_CLIENT_SECRET", "a0c86cfd-e14e-4f41-9626-0c7814139967")
 STATION_ID1 = "SN18700"  # Blindern stasjon i Oslo
 STATION_ID = os.getenv("FROST_STATION_ID", "SN50540")
-START_DATE = "2010-01-01"
+START_DATE = "2015-01-01"
 
 # Hent dagens og gårsdagens dato (gårdagen gir full dag)
 TODAY = datetime.now().strftime("%Y-%m-%d")
