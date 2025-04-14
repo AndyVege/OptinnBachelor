@@ -15,14 +15,15 @@ CLIENT_ID = os.getenv("FROST_CLIENT_ID", "c95efd44-7968-4b65-8ded-38ddb3fbc712")
 CLIENT_SECRET = os.getenv("FROST_CLIENT_SECRET", "a0c86cfd-e14e-4f41-9626-0c7814139967")
 STATION_ID1 = "SN18700"  # Blindern stasjon i Oslo
 STATION_ID = os.getenv("FROST_STATION_ID", "SN50540")
-START_DATE = "2015-01-01"
+START_DATE = "2010-01-01"
 
 # Hent dagens og gårsdagens dato (gårdagen gir full dag)
 TODAY = datetime.now().strftime("%Y-%m-%d")
 YESTERDAY = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
 # Liste over kjente flomdager i Oslo (brukes til å merke historiske hendelser)
-FLOMDAGER_OSLO = [
+FLOMDAGER_OSLO = [ 
+    "2011-08-16", "2012-07-07", "2012-09-12", "2013-06-15", "2014-10-05",
     "2015-08-05", "2015-09-02", "2016-08-06", "2017-08-09",
     "2019-06-26", "2019-08-03", "2019-08-04",
     "2020-10-27", "2022-08-15", "2022-08-16",
