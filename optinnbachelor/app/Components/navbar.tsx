@@ -91,7 +91,7 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
     <nav className="bg-[#1E3528] text-white flex items-center justify-between py-4 px-10 rounded-[20px] w-full">
       <div className="text-3xl font-bold font-sans">Optinn</div>
 
-      <div className="w-2/5 h-9 bg-[#366249] p-1 flex rounded-lg">
+      <div className="w-2/5 h-9 bg-[#366249] p-1 flex rounded-[20px]">
         {["Generelt", "Vær", "Helse"].map((tab) => (
           <div
             key={tab}
