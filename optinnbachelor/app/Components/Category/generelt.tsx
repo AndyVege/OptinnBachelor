@@ -69,7 +69,8 @@ const { data : fetchedData , isLoading } = useQuery({
   refetchOnReconnect: false,
 
 });
-    
+ 
+
 useEffect(() => {
   if (fetchedData) {
     setOptionsKommune(fetchedData.kommuneNames);
