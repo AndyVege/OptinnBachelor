@@ -19,6 +19,7 @@
     "@radix-ui/react-popover": "^1.1.6",
     "@radix-ui/react-scroll-area": "^1.2.3",
     "bcrypt": "^5.1.1",
+    "csvtojson": "^2.0.10",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.39.3",
     "lucide-react": "^0.483.0",
