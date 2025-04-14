@@ -38,7 +38,7 @@ export async function save_HelseData(): Promise<boolean> {
         const kvinner = Number(values[index + 1]);
 
 
-        const kvartal = kvartalLabel.replace("K", ""); // e.g., "2024K1" → "20241"
+        const kvartal = kvartalLabel.replace("K", ""); // "2024K1" -> "20241"
 
         helseEntries.push({
           sykefravaerId: index,
@@ -53,10 +53,13 @@ export async function save_HelseData(): Promise<boolean> {
     }
 
     await dbHelse.insert(Kommune).values([
-        { kommuneId: "3032", kommunenavn: "Gjerdrum" },
-        { kommuneId: "3805", kommunenavn: "Larvik" },
+        { kommuneId: "3203", kommunenavn: "Asker" },
         { kommuneId: "0301", kommunenavn: "Oslo" },
+        { kommuneId: "3301", kommunenavn: "Drammen" },
+        { kommuneId: "3303", kommunenavn: "Kongsberg" },
+        { kommuneId: "4601", kommunenavn: "Bergen" }
       ]).onConflictDoNothing();
+      
 
     await dbHelse.insert(Sykefravaer).values(helseEntries).onConflictDoNothing();
     console.log("Helse data inserted successfully.");

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { save_BefolkningData } from "@/app/api/save_data/save_BefolkningData";
-import { save_BedriftData } from "../save_data/save_BedriftData";
-import { save_HelseData } from "../save_data/save_HelseData";
-import { save_SysselsatteHelseData } from "../save_data/save_SysselsatteHelseData"; // 👈 ny import
+import { save_BedriftData } from "./save_BedriftData";
+import { save_HelseData } from "./save_HelseData";
+import { save_SysselsatteHelseData } from "./save_SysselsatteHelseData"; // 👈 ny import
 
 export async function GET() {
   try {

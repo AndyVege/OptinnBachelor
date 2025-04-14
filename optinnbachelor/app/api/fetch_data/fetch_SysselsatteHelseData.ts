@@ -1,5 +1,5 @@
 export async function fetch_SysselsatteHelseData() {
-    const url_Helse = "https://data.ssb.no/api/v0/no/table/07940/";
+    const url = "https://data.ssb.no/api/v0/no/table/07940/";
   
     const payload = {
       query: [
@@ -7,7 +7,7 @@ export async function fetch_SysselsatteHelseData() {
           code: "Region",
           selection: {
             filter: "agg:KommSummer",
-            values: ["K-3230", "K-0301", "K-3909"]
+            values: ["K-3203", "K-0301", "K-3301", "K-3303", "K-4601"]
           }
         },
         {
@@ -52,7 +52,7 @@ export async function fetch_SysselsatteHelseData() {
     };
   
     try {
-      const response = await fetch(url_Helse, {
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

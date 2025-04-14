@@ -17,9 +17,9 @@ export async function save_SysselsatteHelseData(): Promise<boolean> {
     const apiData: FetchedData | null = await fetch_SysselsatteHelseData();
     if (!apiData) return false;
 
-    const regionCodes = Object.keys(apiData.dimension.Region.category.label); // kommune
+    const regionCodes = Object.keys(apiData.dimension.Region.category.label); // K-0301 → 0301
     const utdanningLevels = Object.keys(apiData.dimension.UtdHelse.category.label); // "01", "02", "03"
-    const years = Object.keys(apiData.dimension.Tid.category.label); // "2018" → 2024
+    const years = Object.keys(apiData.dimension.Tid.category.label);
 
     const values = apiData.value;
     const dataToInsert = [];
@@ -27,7 +27,7 @@ export async function save_SysselsatteHelseData(): Promise<boolean> {
     let index = 0;
 
     for (const regionCode of regionCodes) {
-      const kommuneId = regionCode.replace("K-", "");
+      const kommuneId = regionCode.replace("K-", ""); // f.eks. K-0301 → 0301
 
       for (const utd of utdanningLevels) {
         for (const year of years) {
@@ -47,10 +47,12 @@ export async function save_SysselsatteHelseData(): Promise<boolean> {
     }
 
     await dbHelse.insert(Kommune).values([
-        { kommuneId: "3230", kommunenavn: "Drammen" },
-        { kommuneId: "0301", kommunenavn: "Oslo" },
-        { kommuneId: "3909", kommunenavn: "Larvik" },
-      ]).onConflictDoNothing();
+      { kommuneId: "3203", kommunenavn: "Asker" },
+      { kommuneId: "0301", kommunenavn: "Oslo" },
+      { kommuneId: "3301", kommunenavn: "Drammen" },
+      { kommuneId: "3303", kommunenavn: "Kongsberg" },
+      { kommuneId: "4601", kommunenavn: "Bergen" },
+    ]).onConflictDoNothing();
 
     await dbHelse.insert(SysselsatteHelse).values(dataToInsert).onConflictDoNothing();
     console.log("✅ SysselsatteHelse data saved successfully.");

@@ -8,10 +8,13 @@ import { faPerson, faPersonDress } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 
 const HelseDashboard = () => {
-  const [optionsKommune] = useState<string[]>(["Oslo", "Drammen", "Larvik"]);
+  const [optionsKommune] = useState<string[]>(["Asker", "Oslo", "Drammen", "Kongsberg", "Bergen"]);
   const [selectedKommune, setSelectedKommune] = useState<string>("Oslo");
   const [openKommune, setOpenKommune] = useState<boolean>(false);
+
+  const [optionsKvartal] = useState<string[]>(["20241", "20242", "20243", "20244"]);
   const [selectedKvartal, setSelectedKvartal] = useState<string>("20244");
+  const [openKvartal, setOpenKvartal] = useState<boolean>(false);
 
   const [helseData, setHelseData] = useState<{
     kommuneId: string;
@@ -32,9 +35,11 @@ const HelseDashboard = () => {
   const fetchData = useCallback(async () => {
     try {
       const kommuneMap: Record<string, string> = {
+        "Asker": "3203",
         "Oslo": "0301",
-        "Drammen": "3230",
-        "Larvik": "3909"
+        "Drammen": "3301",
+        "Kongsberg": "3303",
+        "Bergen": "4601"
       };
 
       const kommuneId = kommuneMap[selectedKommune] || "0301";
@@ -85,13 +90,20 @@ const HelseDashboard = () => {
     <div className="p-4">
       <h2 className='font-extrabold mt-5 text-4xl'>Hello, {session?.user?.name}</h2>
       <h2 className='text-center font-extrabold text-4xl'>{selectedKommune}</h2>
-      <div className='flex gap-2 w-60 mb-6'>
+      <div className='flex gap-2 mb-6'>
         <SelectMenu
           options={optionsKommune}
           open={openKommune}
           setOpen={setOpenKommune}
           selected={selectedKommune}
           setSelected={(val: string | number) => setSelectedKommune(String(val))}
+        />
+        <SelectMenu
+          options={optionsKvartal}
+          open={openKvartal}
+          setOpen={setOpenKvartal}
+          selected={selectedKvartal}
+          setSelected={(val: string | number) => setSelectedKvartal(String(val))}
         />
       </div>
 
@@ -100,14 +112,48 @@ const HelseDashboard = () => {
           <div className="bg-white rounded-[30px] shadow-md h-80 w-full py-5">
             <h3 className="text-center text-3xl font-extrabold mb-4">Sykefravær per kvartal</h3>
             <ResponsiveContainer width="100%" height={240}>
-              <AreaChart data={chartData}>
-                <XAxis dataKey="kvartal" />
-                <YAxis />
-                <Tooltip />
-                <Area type="monotone" dataKey="Menn" stroke="#1E3528" fill="#1E3528" strokeWidth={2} />
-                <Area type="monotone" dataKey="Kvinner" stroke="#366249" fill="#366249" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
+  <AreaChart data={chartData}>
+    <XAxis 
+      dataKey="kvartal" 
+      tickFormatter={(kvartal) => {
+        const str = kvartal.toString();
+        const year = str.slice(0, 4);
+        const q = str.slice(4);
+        return `K${q} ${year}`;
+      }} 
+    />
+    <YAxis 
+      tickFormatter={(val) => `${val}%`} 
+      domain={[0, 'auto']} 
+    />
+    <Tooltip 
+      formatter={(value: number) => `${value}%`}
+      labelFormatter={(kvartal: number) => {
+        const str = kvartal.toString();
+        const year = str.slice(0, 4);
+        const q = str.slice(4);
+        return `Kvartal: K${q} ${year}`;
+      }}
+    />
+    <Legend />
+    <Area 
+      type="monotone" 
+      dataKey="Menn" 
+      stroke="#2F3E34" 
+      fill="#BCE77B" 
+      strokeWidth={2} 
+      dot={{ r: 3 }} 
+    />
+    <Area 
+      type="monotone" 
+      dataKey="Kvinner" 
+      stroke="#1E3528" 
+      fill="#619b8a" 
+      strokeWidth={2} 
+      dot={{ r: 3 }} 
+    />
+  </AreaChart>
+</ResponsiveContainer>
           </div>
 
           <div className="bg-white rounded-[30px] shadow-md h-80 w-full py-5">
