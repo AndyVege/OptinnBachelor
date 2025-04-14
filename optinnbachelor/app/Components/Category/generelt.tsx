@@ -4,7 +4,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPerson, faPersonDress} from "@fortawesome/free-solid-svg-icons";
 import SelectMenu from '../selectMenu';
-import { Index } from 'drizzle-orm/mysql-core';
+import { signOut, useSession } from "next-auth/react";
+
 
 const data = [
   { year: '2021', value: 20 },
@@ -21,6 +22,7 @@ const data3 = [
   {name: '55-64',Men: 2780,Female: 3908},
 ];
 
+
 const colorPopulation = ["#0E1915","#2F3E34","#7DA37A","#5C8B5E","#2E3D2F"]
 const colorCompany = ['#BCE77B','#366249','#1E3528','#E1DCD5']
 
@@ -36,15 +38,17 @@ const [openYear, setOpenYear] = useState<boolean>(false);
 
 const [Last5YearsPopulation, setLast5YearPopulation] = useState<{
   antallBefolkning: number;
-  fordeling: Record<string, any>; 
+  fordeling: Record<string, number>; 
   year: number;
 }[]>([]);
 
 const [Last5YearsCompany, setLast5YearCompany] = useState<{
   antallBedrifter: number;
-  fordeling: Record<string, any>; 
+  fordeling: Record<string, number>; 
   year: number;
 }[]>([]);
+
+const { data: session } = useSession()
 
 // Fetch data on selectedYear or selectedKommune change
 const fetchData = useCallback(async () => {
@@ -67,6 +71,7 @@ const fetchData = useCallback(async () => {
 useEffect(() => {
   fetchData();
 }, [fetchData]);
+
 const optionListKommune : string[] = optionsKommune.map(option => option.kommuneNavn)
 const optionListYear : number[] = optionsYear.map(option => option.year)
 
@@ -86,10 +91,10 @@ const pieData = thisYearPopulationData ? Object.entries(thisYearPopulationData.f
       color: colorCompany[index % colorCompany.length] // Assign colors cyclically
     }))
   : [];
-console.log(pieData)
+
   return (
-    <div className="py-5">
-      <h2 className='font-extrabold text-5xl'>Hello, Musdafa!</h2>
+    <div>
+      <h2 className='font-extrabold mt-5 text-4xl'>Hello, {session?.user?.name}</h2>
       <h2 className='text-center font-extrabold text-4xl'>{selectedKommune}</h2>
       <div className='flex gap-2 w-60'>
         <SelectMenu options={optionListKommune} open={openKommune} setOpen={setOpenKommune} selected={selectedKommune} setSelected={setSelectedKommune} />
@@ -255,7 +260,7 @@ console.log(pieData)
                   <div className="flex flex-col gap-2">
                     {pieData2.map((item, index) => (
                       <div key={index} className="flex items-center gap-2">
-                        <div className="w-4 h-4" style={{ backgroundColor: item.color[index] }}></div>
+                        <div className="w-4 h-4" style={{ backgroundColor: item.color }}></div>
                         <p className="text-sm">{item.name}</p>
                       </div>
                     ))}
