@@ -5,7 +5,7 @@ import { faBell, faGear } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import { Check, Clock, ExternalLink } from "lucide-react";
+import { Check, Clock } from "lucide-react";
 
 type NavbarProps = {
   activeTab: string;
@@ -95,7 +95,7 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
         {["Generelt", "Vær", "Helse"].map((tab) => (
           <div
             key={tab}
-            className={`flex-1 font-bold text-center rounded-lg cursor-pointer ${
+            className={`flex-1 font-bold text-center rounded-[20px] cursor-pointer ${
               activeTab === tab ? "bg-white text-green-900" : "bg-[#366249] opacity-50"
             }`}
             onClick={() => setActiveTab(tab)}
@@ -126,7 +126,7 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
           {showNotifications && (
             <div
               ref={notificationRef}
-              className="absolute right-0 mt-2 w-80 bg-white text-gray-800 rounded-lg shadow-lg z-50 overflow-hidden"
+              className="absolute right-0 border border-white mt-2 w-80 bg-white text-gray-800 rounded-lg shadow-lg z-50 overflow-hidden"
             >
               <div className="bg-[#1E3528] text-white p-4 flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Varsler</h3>

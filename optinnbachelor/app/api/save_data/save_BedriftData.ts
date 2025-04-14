@@ -2,6 +2,7 @@ import { dbGenerelt } from "@/db";
 import { Bedrift } from "@/db/schema";
 import { fetch_BedriftData } from "../fetch_data/fetch_BedriftData";
 
+
 type FetchedData = {
     dimension: {
       Region: {

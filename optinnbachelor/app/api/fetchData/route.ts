@@ -1,7 +1,13 @@
+
 import { NextResponse } from "next/server";
+import { useQuery } from '@tanstack/react-query'
+
+
+
 
 export async function POST() {
     const url_Bedrift = "https://data.ssb.no/api/v0/no/table/07091/";
+
  
     const payload_BedriftData = {
         "query": [
@@ -14,20 +20,30 @@ export async function POST() {
       }
       
     try {
-        const api_BedriftData = await fetch(url_Bedrift, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload_BedriftData),
-            })
-
-        if (!api_BedriftData.ok) {
-            throw new Error( 'HTTP error! Status: ${api_BedriftData.status}');
-            }
-          
-        const data_bedrift = await api_BedriftData.json(); 
-       return NextResponse.json(data_bedrift)
-
-    } 
+        const { data } = useQuery({
+            queryKey: ['bedriftData', payload_BedriftData],
+            queryFn: async () => {
+              const response = await fetch('/api/bedrift', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload_BedriftData),
+              })
+        
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`)
+              }
+        
+              return response.json()
+            },
+            // optional: only run query if payload exists
+            enabled: !!payload_BedriftData,
+          })
+            const data_bedrift = await data.json(); 
+            return NextResponse.json(data_bedrift)
+        }
+        
     catch (error) {
         console.error("Error fetching data:", error);
         return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 });
