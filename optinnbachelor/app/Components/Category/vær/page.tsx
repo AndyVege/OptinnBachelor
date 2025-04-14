@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import WeatherDisplay from "../../værDisplay";
-import SelectMenu from '../../selectMenu';
+import React, { useState } from "react";
+import WeatherDisplay from "../../værDisplay";  // Vær at denne stien er riktig
+import SelectMenu from "../../selectMenu";
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
+import FlomProjeksjon from "./flomprojeksjon"; // Importer den nye flom-projeksjonskomponenten
 
 export default function Home() {
   const [locations] = useState([
@@ -14,8 +15,8 @@ export default function Home() {
   return (
     <main className="p-8">
       <h1 className="text-2xl font-bold mb-6">Optinn værdashboard 🌤️</h1>
-      
-      <div className='flex gap-2 w-60 mb-6'>
+
+      <div className="flex gap-2 w-60 mb-6">
         <Listbox value={selectedLocationId} onChange={setSelectedLocationId}>
           <div className="relative w-60">
             <ListboxButton className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-left">
@@ -28,7 +29,7 @@ export default function Home() {
                   value={loc.id}
                   className={({ active }) =>
                     `cursor-pointer px-4 py-2 ${
-                      active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                      active ? "bg-blue-100 text-blue-900" : "text-gray-900"
                     }`
                   }
                 >
@@ -39,7 +40,11 @@ export default function Home() {
           </div>
         </Listbox>
       </div>
+
       <WeatherDisplay locationId={selectedLocationId} />
+
+      {/* Legg til flomprojeksjons-komponenten under værdisplay */}
+      <FlomProjeksjon />
     </main>
   );
 }
