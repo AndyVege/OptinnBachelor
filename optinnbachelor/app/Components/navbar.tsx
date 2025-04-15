@@ -5,27 +5,23 @@ import { faBell, faGear } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import { Check, Clock, ExternalLink } from "lucide-react";
+import { Check, Clock } from "lucide-react";
+
+// IMPORT av custom hook fra lib/useNotifications
+import { useNotifications, Notification } from "@/lib/useNotifications";
 
 type NavbarProps = {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 };
 
-type Notification = {
-  id: string;
-  title: string;
-  description?: string;
-  timestamp: Date;
-  read: boolean;
-  priority?: "low" | "medium" | "high";
-};
-
+// Hvis du ønsker å ha noen "start" notifikasjoner, kan du beholde dette
 const sampleNotifications: Notification[] = [
   {
     id: "1",
     title: "Flomvarsel i ditt område",
-    description: "Det er meldt om økt vannstand i elver og bekker i nærheten av din lokasjon.",
+    description:
+      "Det er meldt om økt vannstand i elver og bekker i nærheten av din lokasjon.",
     timestamp: new Date(Date.now() - 1000 * 60 * 30),
     read: false,
     priority: "high",
@@ -41,29 +37,41 @@ const sampleNotifications: Notification[] = [
   {
     id: "3",
     title: "Høyt polleninnhold i lufta",
-    description: "Pollenvarselet for i dag viser høye nivåer av bjørk og gress.",
+    description:
+      "Pollenvarselet for i dag viser høye nivåer av bjørk og gress.",
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
     read: true,
     priority: "low",
   },
 ];
 
-const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
+export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   const { data: session } = useSession();
 
-  const [notifications, setNotifications] = useState<Notification[]>(sampleNotifications);
+  // HENTER notifications via custom hook
+  // Her kan du justere pollIntervalMs (f.eks. 5000 for hvert 5. sekund)
+  const { notifications, setNotifications } = useNotifications({
+    initialNotifications: sampleNotifications,
+    pollIntervalMs: 10000,
+  });
+
+  // Standard states
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
 
+  // Tell antall uleste
   const unreadCount = notifications.filter((n) => !n.read).length;
 
+  // Lukker dropdowner om man klikker utenfor
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) &&
-        (notificationRef.current && !notificationRef.current.contains(event.target as Node))
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
       ) {
         setShowDropdown(false);
         setShowNotifications(false);
@@ -74,10 +82,12 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Marker alle som lest
   const markAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, read: true })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
+  // Format tidsstempel
   const formatTimeAgo = (date: Date) => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -89,8 +99,10 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
 
   return (
     <nav className="bg-[#1E3528] text-white flex items-center justify-between py-4 px-10 rounded-[20px] w-full">
+      {/* Venstre side */}
       <div className="text-3xl font-bold font-sans">Optinn</div>
 
+      {/* Knapper i midten (Generelt, Vær, Helse) */}
       <div className="w-2/5 h-9 bg-[#366249] p-1 flex rounded-lg">
         {["Generelt", "Vær", "Helse"].map((tab) => (
           <div
@@ -105,10 +117,11 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
         ))}
       </div>
 
+      {/* Høyre side */}
       <div className="flex space-x-5 items-center relative">
         <FontAwesomeIcon className="w-5 h-5 cursor-pointer" icon={faGear} />
 
-        {/* Varslingsikon med indikator */}
+        {/* VARSLINGSIKON & NOTIF-DROPDOWN */}
         <div className="relative">
           <button
             className="relative text-white hover:bg-[#366249] p-2 rounded-lg"
@@ -122,7 +135,7 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
             )}
           </button>
 
-          {/* Varslingsdropdown */}
+          {/* Selve varslingsdropdown */}
           {showNotifications && (
             <div
               ref={notificationRef}
@@ -140,7 +153,6 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
                   </button>
                 )}
               </div>
-
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
@@ -169,37 +181,58 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
                             </div>
                           </div>
                           {notification.description && (
-                            <p className="text-xs text-gray-600">{notification.description}</p>
+                            <p className="text-xs text-gray-600">
+                              {notification.description}
+                            </p>
                           )}
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="p-6 text-center text-gray-500 text-sm">Ingen varsler å vise</div>
+                  <div className="p-6 text-center text-gray-500 text-sm">
+                    Ingen varsler å vise
+                  </div>
                 )}
               </div>
             </div>
           )}
         </div>
 
-        {/* Profilbilde med dropdown */}
+        {/* PROFILBILDE + DROPDOWN (samme som før) */}
         <div className="relative">
-          <div onClick={() => setShowDropdown(!showDropdown)} className="w-10 h-10 overflow-hidden rounded-full cursor-pointer">
-            <Image src={session?.user?.image || "/images/default.profile_pic.jpg"} alt="User Profile" width={50} height={50} />
+          <div
+            // For dropdown
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="w-10 h-10 overflow-hidden rounded-full cursor-pointer"
+          >
+            <Image
+              src={session?.user?.image || "/images/default.profile_pic.jpg"}
+              alt="User Profile"
+              width={50}
+              height={50}
+            />
           </div>
           {showDropdown && (
-            <div ref={dropdownRef} className="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-20">
-              <div className="px-4 py-2 font-bold">{session?.user?.name || "User"}</div>
+            <div
+              ref={dropdownRef}
+              className="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-20"
+            >
+              <div className="px-4 py-2 font-bold">
+                {session?.user?.name || "User"}
+              </div>
               <div className="text-sm px-4 pb-2">{session?.user?.email}</div>
-              <button onClick={() => signOut()} className="w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</button>
+              <button
+                onClick={() => signOut()}
+                className="w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                Sign Out
+              </button>
             </div>
           )}
         </div>
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}
 
