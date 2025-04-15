@@ -174,8 +174,13 @@ def hent_historiske_klimadata():
 # ================================================
 def beregn_flomrisiko(df_vær, df_vannfør):
     """
-    Slår sammen værdata og vannføringsdata,
-    normaliserer de sentrale variablene og beregner en samlet risikoscore.
+    Slår sammen værdata og vannføringsdata, normaliserer de sentrale variablene og beregner flomrisiko.
+    
+      - Nedbør får en vekt på 0.6
+      - Vannføring får en vekt på 0.3
+      - Temperatur får en vekt på 0.1
+      
+    Den kombinerte "rå risikoen" omformes så til en sannsynlighet ved bruk av en logistisk transformasjon.
     """
     df_vær["dato"] = pd.to_datetime(df_vær["dato"])
     df_vannfør["dato"] = pd.to_datetime(df_vannfør["dato"])
@@ -188,7 +193,7 @@ def beregn_flomrisiko(df_vær, df_vannfør):
     )
     df_merged["vannføring"] = df_merged["vannføring"].fillna(0)
 
-    # Under vintermåneder: om temperaturen er under 0, settes nedbør til 0 (snøforhold)
+    # Under vintermåneder: Dersom temperaturen er under 0, settes nedbør til 0 (snøforhold)
     vinter_mask = df_merged["dato"].dt.month.isin([12, 1, 2])
     is_frost = df_merged["mean(air_temperature P1D)"] < 0
     df_merged.loc[vinter_mask & is_frost, "sum(precipitation P1D)"] = 0
@@ -204,21 +209,29 @@ def beregn_flomrisiko(df_vær, df_vannfør):
         z_kol = "z_" + kolonne
         df_merged[z_kol] = (df_merged[kolonne] - mean_val) / std_val
 
-    # Kombiner z-scores til en samlet risikoscore
-    df_merged["z_sum"] = (
-        df_merged["z_sum(precipitation P1D)"] +
-        df_merged["z_mean(air_temperature P1D)"] +
-        df_merged["z_vannføring"]
+    # Vektene for de normaliserte variablene
+    w_rain = 0.6   # Nedbør vekt
+    w_stream = 0.3 # Vannføring vekt
+    w_temp = 0.1   # Temperatur vekt
+
+    # Beregn den "rå" risikoen som en vektet sum av de z-normaliserte verdiene
+    df_merged["raw_risk"] = (
+        w_rain * df_merged["z_sum(precipitation P1D)"] +
+        w_stream * df_merged["z_vannføring"] +
+        w_temp * df_merged["z_mean(air_temperature P1D)"]
     )
 
-    # Definer flomrisiko basert på terskler for z-summen
+    # Omforme den rå risikoen til en sannsynlighet med logistisk funksjon
+    df_merged["flomrisiko_proba"] = 1 / (1 + np.exp(-df_merged["raw_risk"]))
+
+    # Alternativt kan du definere flomrisiko-kategorier basert på terskler i sannsynligheten
     conditions = [
-        (df_merged["z_sum"] < 0),
-        (df_merged["z_sum"] < 2),
-        (df_merged["z_sum"] >= 2),
+        (df_merged["flomrisiko_proba"] < 0.33),
+        (df_merged["flomrisiko_proba"] < 0.66),
+        (df_merged["flomrisiko_proba"] >= 0.66)
     ]
     choices = [0, 1, 2]
-    df_merged["flomrisiko"] = np.select(conditions, choices, default=1)
+    df_merged["flomrisiko_kategori"] = np.select(conditions, choices, default=1)
 
     return df_merged
 
@@ -240,14 +253,12 @@ def tren_flommodell(df, terskel=0.5):
     Trener en Random Forest-modell for å klassifisere flomhendelser.
     Inkluderer den nye featuren for 3-dagers akkumulerte nedbør.
     """
-    # Sørg for at nødvendige verdier er satt
     df["sum(precipitation P1D)"] = df["sum(precipitation P1D)"].fillna(0)
     df["mean(air_temperature P1D)"] = df["mean(air_temperature P1D)"].fillna(
         df["mean(air_temperature P1D)"].mean()
     )
     df["vannføring"] = df["vannføring"].fillna(0)
     
-    # Fjern rader uten flommerking
     df = df.dropna(subset=["faktisk_flom"])
     
     if len(df) < 10:
@@ -255,7 +266,7 @@ def tren_flommodell(df, terskel=0.5):
 
     print(f"🧪 Antall rader for trening: {len(df)}")
     
-    # Definer input features, inkludert ny 3-dagers nedbørsfeature
+    # Definer input features – vi inkluderer 3-dagers nedbør her
     features = [
         "sum(precipitation P1D)",
         "nedbør_3d_sum",
@@ -266,13 +277,11 @@ def tren_flommodell(df, terskel=0.5):
     X = df[features]
     y = df["faktisk_flom"]
     
-    # Del datasettet i trenings- og testsett med bevaring av klassefordelingen
     X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.3, random_state=42)
 
     model = RandomForestClassifier(n_estimators=100, random_state=42, class_weight="balanced")
     model.fit(X_train, y_train)
 
-    # Forutsi sannsynlighet og anvend terskelverdi for klassifisering
     y_prob = model.predict_proba(X_test)[:, 1]
     y_pred = (y_prob > terskel).astype(int)
 
@@ -289,7 +298,6 @@ def projiser_flom_fremover(model, df_historisk, antall_dager=3650):
     Simulerer fremtidige værdata og benytter den trente modellen for å beregne flomsannsynlighet.
     Inkluderer simulering av den 3-dagers akkumulerte nedbørsmengden.
     """
-    # Beregn historiske statistikker for variablene
     precip_mean = df_historisk["sum(precipitation P1D)"].fillna(0).mean()
     precip_std = df_historisk["sum(precipitation P1D)"].fillna(0).std()
     temp_mean = df_historisk["mean(air_temperature P1D)"].mean()
@@ -297,7 +305,6 @@ def projiser_flom_fremover(model, df_historisk, antall_dager=3650):
     vannføring_mean = df_historisk["vannføring"].fillna(0).mean()
     vannføring_std = df_historisk["vannføring"].fillna(0).std()
 
-    # Hent klimadata for å estimere lineær trend
     try:
         slope_temp, slope_prec = hent_historiske_klimadata()
         print(f"🔥 Klimaendrings-trend: Temperatur {slope_temp:.4f} °C/år, Nedbør {slope_prec:.4f} mm/d/år")
@@ -305,38 +312,35 @@ def projiser_flom_fremover(model, df_historisk, antall_dager=3650):
         print(f"Feil ved henting av klimadata: {e}")
         slope_temp, slope_prec = 0.0, 0.0
 
-    # Generer fremtidige datoer
-    fremtidige_datoer = pd.date_range(start="2025-01-01", periods=antall_dager)
-    
-    # Lag lineære trender basert på historiske gjennomsnittsverdier
+    # Startdato settes til i morgen slik at alle projiserte dager er i fremtiden
+    start_dato = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
+    fremtidige_datoer = pd.date_range(start=start_dato, periods=antall_dager)
+
     trend_precip = np.linspace(precip_mean, precip_mean * 2.0, antall_dager)
     trend_temp = np.linspace(temp_mean, temp_mean + 4.0, antall_dager)
     trend_vannføring = np.linspace(vannføring_mean, vannføring_mean * 2.0, antall_dager)
     
     np.random.seed(42)
-    noise_factor = 0.2  # Juster støyens størrelse om nødvendig
+    noise_factor = 0.2
     noise_precip = np.random.normal(0, precip_std, antall_dager) * noise_factor
     noise_temp   = np.random.normal(0, temp_std, antall_dager) * noise_factor
     noise_vannføring = np.random.normal(0, vannføring_std, antall_dager) * noise_factor
 
-    # Kalkuler klimaoffset basert på antall år etter 2020
     years_after_2020 = np.array([date.year - 2020 for date in fremtidige_datoer])
     klima_offset_temp = years_after_2020 * slope_temp
     klima_offset_prec = years_after_2020 * slope_prec
 
-    # Beregn fremtidige verdier for variablene med trend, offset og støy
     future_precip = np.clip(trend_precip + noise_precip + klima_offset_prec, 0, None)
     future_temp   = trend_temp + noise_temp + klima_offset_temp
     future_vannføring = np.clip(trend_vannføring + noise_vannføring, 0, None)
 
-    # Bygg DataFrame med de simulerte fremtidsverdiene
     fremtidig_data = pd.DataFrame({
         "sum(precipitation P1D)": future_precip,
         "mean(air_temperature P1D)": future_temp,
         "vannføring": future_vannføring
     })
     
-    # Legg til sesongvariabel basert på måned
+    # Legg til høy-risiko sesong basert på måned (defineres her ved å sette 0 for månedene 4-7 og 1 for resten)
     fremtidig_data["month"] = fremtidige_datoer.month
     fremtidig_data["high_risk_season"] = fremtidig_data["month"].apply(lambda m: 0 if m in [4, 5, 6, 7] else 1)
     fremtidig_data.drop("month", axis=1, inplace=True)
@@ -344,7 +348,6 @@ def projiser_flom_fremover(model, df_historisk, antall_dager=3650):
     # Legg til den 3-dagers akkumulerte nedbørsmengden for fremtidige data
     fremtidig_data["nedbør_3d_sum"] = fremtidig_data["sum(precipitation P1D)"].rolling(window=3, min_periods=1).sum()
 
-    # Forutsi sannsynligheten for flom ved bruk av alle featurene
     features = [
         "sum(precipitation P1D)",
         "nedbør_3d_sum",
@@ -354,16 +357,33 @@ def projiser_flom_fremover(model, df_historisk, antall_dager=3650):
     ]
     sannsynligheter = model.predict_proba(fremtidig_data[features])[:, 1]
 
-    # Finn de 10 dagene med høyest sannsynlighet for flom
-    topp = np.argsort(sannsynligheter)[-10:][::-1]
-    print("\n🔮 Topp 10 projiserte flomdager:")
-    for i in topp:
-        print(f"{fremtidige_datoer[i].date()}: Flomsannsynlighet: {sannsynligheter[i]:.2%}")
-
+    # Lag et DataFrame med dato og beregnet flomsannsynlighet
     df_fremtid = pd.DataFrame({
         "dato": fremtidige_datoer,
         "flomsannsynlighet": sannsynligheter
     })
+
+    # --------------------------------------------
+    # Del 1: Dager i neste måned – sortert kronologisk
+    # --------------------------------------------
+    start_dt = pd.to_datetime(start_dato)
+    end_dt = start_dt + pd.DateOffset(months=1)
+    df_next_month = df_fremtid[(df_fremtid["dato"] >= start_dt) & (df_fremtid["dato"] < end_dt)]
+    df_next_month = df_next_month.sort_values("dato")
+    
+    print("\n🔮 Prosjekterte flomdager i neste måned (kronologisk rekkefølge):")
+    for idx, row in df_next_month.iterrows():
+        print(f"{row['dato'].date()}: Flomsannsynlighet: {row['flomsannsynlighet']:.2%}")
+
+    # --------------------------------------------
+    # Del 2: Top 10 dager med høyest flomsannsynlighet totalt – sortert kronologisk
+    # --------------------------------------------
+    df_top10 = df_fremtid.nlargest(10, "flomsannsynlighet").sort_values("dato")
+    
+    print("\n🔮 Topp 10 projiserte flomdager (kronologisk rekkefølge):")
+    for idx, row in df_top10.iterrows():
+        print(f"{row['dato'].date()}: Flomsannsynlighet: {row['flomsannsynlighet']:.2%}")
+
     return df_fremtid
 
 # ================================================
@@ -371,46 +391,39 @@ def projiser_flom_fremover(model, df_historisk, antall_dager=3650):
 # ================================================
 if __name__ == "__main__":
     try:
-        # Hent værdata
         værdata = hent_værdata()
         print("✅ Værdata hentet")
     except Exception as e:
         print(f"Kunne ikke hente værdata: {e}")
         exit(1)
 
-    # Hent nedbørsdata
     nedbørdata = hent_nedbør()
     print("✅ Nedbørsdata hentet")
 
-    # Gjør om datoene til datetime og merge datasett
     værdata["dato"] = pd.to_datetime(værdata["dato"])
     nedbørdata["dato"] = pd.to_datetime(nedbørdata["dato"])
     værdata = pd.merge(værdata, nedbørdata, on="dato", how="left")
     
-    # Kopier nedbørsdata til kolonnen som benyttes for flomrisikovurdering og slett opprinnelig kolonne
+    # Kopier nedbørsdata til kolonnen som benyttes for flomrisikovurdering
     værdata["sum(precipitation P1D)"] = værdata["nedbør"]
     værdata = værdata.drop(columns=["nedbør"])
     
-    # Sorter etter dato og legg til 3-dagers rullerende sum for nedbør
+    # Sorter og beregn 3-dagers akkumulerte nedbør
     værdata = værdata.sort_values("dato").reset_index(drop=True)
     værdata["nedbør_3d_sum"] = værdata["sum(precipitation P1D)"].rolling(window=3, min_periods=1).sum()
 
-    # Hent vannføringsdata
     vannføringsdata = hent_vannføringsdata()
     print("✅ Vannføringsdata hentet")
 
-    # Beregn flomrisiko basert på sammenslåtte data og legg til historiske flommarkeringer
     df_flom = beregn_flomrisiko(værdata, vannføringsdata)
     df_flom = legg_til_flomdager(df_flom, FLOMDAGER_OSLO)
 
     print("\n📆 Historiske flomdager og vurdering:")
-    print(df_flom[df_flom["faktisk_flom"] == 1][["dato", "sum(precipitation P1D)", "mean(air_temperature P1D)", "vannføring", "flomrisiko"]])
+    print(df_flom[df_flom["faktisk_flom"] == 1][["dato", "sum(precipitation P1D)", "mean(air_temperature P1D)", "vannføring", "flomrisiko_kategori"]])
 
-    # Tren modellen og inkluder den nye featuren i treningssettet
     modell = tren_flommodell(df_flom, terskel=0.5)
     fremtidig = projiser_flom_fremover(modell, df_flom)
     
-    # Lagre projeksjonsdata til CSV i en spesifisert katalog
     output_dir = os.path.join(os.getcwd(), "..", "data")
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "latest_projisert_flom.csv")
