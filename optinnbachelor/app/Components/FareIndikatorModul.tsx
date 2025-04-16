@@ -31,7 +31,7 @@ const hazardData = [
           {hazardData.map((hazard, index) => (
             <div
               key={index}
-              className="flex flex-col items-center justify-between bg-white p-6 rounded-2xl shadow-md w-64"
+              className="flex flex-col items-center justify-between bg-white p-6 rounded-2xl shadow-md w-48"
             >
               <div className="text-5xl mb-4">{hazard.icon}</div>
               <h2 className="text-xl font-bold text-gray-800 mb-1">{hazard.name}</h2>
