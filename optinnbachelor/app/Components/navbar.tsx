@@ -5,7 +5,7 @@ import { faBell, faGear } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import { Check, Clock } from "lucide-react";
+import { Check, Clock, Trash } from "lucide-react";
 
 // IMPORT av custom hook fra lib/useNotifications
 import { useNotifications, Notification } from "@/lib/useNotifications";
@@ -25,6 +25,7 @@ const sampleNotifications: Notification[] = [
     timestamp: new Date(Date.now() - 1000 * 60 * 30),
     read: false,
     priority: "high",
+    source: "manual",
   },
   {
     id: "2",
@@ -33,6 +34,7 @@ const sampleNotifications: Notification[] = [
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
     read: false,
     priority: "medium",
+    source: "manual",
   },
   {
     id: "3",
@@ -42,29 +44,29 @@ const sampleNotifications: Notification[] = [
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
     read: true,
     priority: "low",
+    source: "manual",
   },
 ];
 
 export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   const { data: session } = useSession();
 
-  // HENTER notifications via custom hook
-  // Her kan du justere pollIntervalMs (f.eks. 5000 for hvert 5. sekund)
-  const { notifications, setNotifications } = useNotifications({
+  const {
+    notifications,
+    setNotifications,
+    removeAutoNotifications,
+  } = useNotifications({
     initialNotifications: sampleNotifications,
     pollIntervalMs: 10000,
   });
 
-  // Standard states
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
 
-  // Tell antall uleste
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  // Lukker dropdowner om man klikker utenfor
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -82,12 +84,10 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Marker alle som lest
   const markAllAsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
-  // Format tidsstempel
   const formatTimeAgo = (date: Date) => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -143,15 +143,26 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             >
               <div className="bg-[#1E3528] text-white p-4 flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Varsler</h3>
-                {unreadCount > 0 && (
-                  <button
-                    onClick={markAllAsRead}
-                    className="text-xs flex items-center gap-1 text-white hover:text-gray-300"
-                  >
-                    <Check className="h-3 w-3" />
-                    Marker alle som lest
-                  </button>
-                )}
+                <div className="flex gap-3">
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={markAllAsRead}
+                      className="text-xs flex items-center gap-1 text-white hover:text-gray-300"
+                    >
+                      <Check className="h-3 w-3" />
+                      Marker alle
+                    </button>
+                  )}
+                  {notifications.some(n => n.source === "auto") && (
+                    <button
+                      onClick={removeAutoNotifications}
+                      className="text-xs flex items-center gap-1 text-white hover:text-gray-300"
+                    >
+                      <Trash className="h-3 w-3" />
+                      Fjern auto
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length > 0 ? (
@@ -202,7 +213,6 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
         {/* PROFILBILDE + DROPDOWN (samme som før) */}
         <div className="relative">
           <div
-            // For dropdown
             onClick={() => setShowDropdown(!showDropdown)}
             className="w-10 h-10 overflow-hidden rounded-full cursor-pointer"
           >
@@ -235,4 +245,3 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
     </nav>
   );
 }
-
