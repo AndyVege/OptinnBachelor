@@ -1,5 +1,5 @@
 "use client";
-
+import LinkVidere from "./linkVidere";
 import { useEffect, useState } from "react";
 
 type Forecast = {
@@ -18,6 +18,10 @@ export default function WeatherForecastModule({ locationId }: { locationId: numb
   useEffect(() => {
     const fetchData = async () => {
       if (!locationId) return;
+
+      // Hent data fra eksternt API og lagre i databasen
+      
+      await fetch(`/api/getForecasts?locationId=${locationId}`);
 
       const res = await fetch(`/api/weather?locationId=${locationId}`);
       const json = await res.json();
@@ -42,8 +46,11 @@ export default function WeatherForecastModule({ locationId }: { locationId: numb
   }, [locationId]);
 
   return (
-    <div className="bg-white rounded-[30px] shadow-md p-5 w-1/3 max-w-md">
-      <h2 className="text-2xl font-bold mb-4 text-center">Værmelding</h2>
+    <div className="relative bg-white rounded-[30px] shadow-md p-5 w-1/3 max-w-md">
+      <div className="absolute top-5 right-5">
+        
+      </div>
+      <h2 className="text-2xl font-bold mb-4 text-center">Værmelding(fjern h2 senere)</h2>
       <div className="flex justify-around text-center">
         {forecasts.map((f, idx) => (
           <div key={idx} className="p-3 border rounded-xl shadow-sm w-1/3 mx-1 transition-shadow duration-300 hover:shadow-md">
