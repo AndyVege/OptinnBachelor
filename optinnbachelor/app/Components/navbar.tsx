@@ -5,65 +5,40 @@ import { faBell, faGear } from "@fortawesome/free-solid-svg-icons";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import { Check, Clock } from "lucide-react";
+import { Check, Clock, Trash } from "lucide-react";
+import { useNotifications, Notification } from "@/lib/useNotifications";
 
 type NavbarProps = {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 };
 
-type Notification = {
-  id: string;
-  title: string;
-  description?: string;
-  timestamp: Date;
-  read: boolean;
-  priority?: "low" | "medium" | "high";
-};
-
-const sampleNotifications: Notification[] = [
-  {
-    id: "1",
-    title: "Flomvarsel i ditt område",
-    description: "Det er meldt om økt vannstand i elver og bekker i nærheten av din lokasjon.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 30),
-    read: false,
-    priority: "high",
-  },
-  {
-    id: "2",
-    title: "Kraftig vind de neste 24 timene",
-    description: "Meteorologisk institutt har sendt ut gult farevarsel for vind.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-    read: false,
-    priority: "medium",
-  },
-  {
-    id: "3",
-    title: "Høyt polleninnhold i lufta",
-    description: "Pollenvarselet for i dag viser høye nivåer av bjørk og gress.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-    read: true,
-    priority: "low",
-  },
-];
-
-const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
+export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   const { data: session } = useSession();
 
-  const [notifications, setNotifications] = useState<Notification[]>(sampleNotifications);
+  const {
+    notifications,
+    setNotifications,
+    removeAutoNotifications,
+  } = useNotifications({
+    initialNotifications: [],
+    pollIntervalMs: 10000,
+  });
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const unreadCount = notifications.filter((n: Notification) => !n.read).length;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) &&
-        (notificationRef.current && !notificationRef.current.contains(event.target as Node))
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
       ) {
         setShowDropdown(false);
         setShowNotifications(false);
@@ -75,7 +50,9 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
   }, []);
 
   const markAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, read: true })));
+    setNotifications((prev: Notification[]) =>
+      prev.map((n: Notification) => ({ ...n, read: true }))
+    );
   };
 
   const formatTimeAgo = (date: Date) => {
@@ -108,7 +85,6 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
       <div className="flex space-x-5 items-center relative">
         <FontAwesomeIcon className="w-5 h-5 cursor-pointer" icon={faGear} />
 
-        {/* Varslingsikon med indikator */}
         <div className="relative">
           <button
             className="relative text-white p-2 rounded-lg"
@@ -122,7 +98,6 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
             )}
           </button>
 
-          {/* Varslingsdropdown */}
           {showNotifications && (
             <div
               ref={notificationRef}
@@ -130,20 +105,30 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
             >
               <div className="bg-[#1E3528] text-white p-4 flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Varsler</h3>
-                {unreadCount > 0 && (
-                  <button
-                    onClick={markAllAsRead}
-                    className="text-xs flex items-center gap-1 text-white hover:text-gray-300"
-                  >
-                    <Check className="h-3 w-3" />
-                    Marker alle som lest
-                  </button>
-                )}
+                <div className="flex gap-3">
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={markAllAsRead}
+                      className="text-xs flex items-center gap-1 text-white hover:text-gray-300"
+                    >
+                      <Check className="h-3 w-3" />
+                      Marker alle
+                    </button>
+                  )}
+                  {notifications.some((n: Notification) => n.source === "auto") && (
+                    <button
+                      onClick={removeAutoNotifications}
+                      className="text-xs flex items-center gap-1 text-white hover:text-gray-300"
+                    >
+                      <Trash className="h-3 w-3" />
+                      Fjern auto
+                    </button>
+                  )}
+                </div>
               </div>
-
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length > 0 ? (
-                  notifications.map((notification) => (
+                  notifications.map((notification: Notification) => (
                     <div
                       key={notification.id}
                       className="p-4 border-b last:border-0 hover:bg-gray-100 transition-colors"
@@ -169,37 +154,55 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
                             </div>
                           </div>
                           {notification.description && (
-                            <p className="text-xs text-gray-600">{notification.description}</p>
+                            <p className="text-xs text-gray-600">
+                              {notification.description}
+                            </p>
                           )}
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="p-6 text-center text-gray-500 text-sm">Ingen varsler å vise</div>
+                  <div className="p-6 text-center text-gray-500 text-sm">
+                    Ingen varsler å vise
+                  </div>
                 )}
               </div>
             </div>
           )}
         </div>
 
-        {/* Profilbilde med dropdown */}
         <div className="relative">
-          <div onClick={() => setShowDropdown(!showDropdown)} className="w-10 h-10 overflow-hidden rounded-full cursor-pointer">
-            <Image src={session?.user?.image || "/images/default.profile_pic.jpg"} alt="User Profile" width={50} height={50} />
+          <div
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="w-10 h-10 overflow-hidden rounded-full cursor-pointer"
+          >
+            <Image
+              src={session?.user?.image || "/images/default.profile_pic.jpg"}
+              alt="User Profile"
+              width={50}
+              height={50}
+            />
           </div>
           {showDropdown && (
-            <div ref={dropdownRef} className="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-20">
-              <div className="px-4 py-2 font-bold">{session?.user?.name || "User"}</div>
+            <div
+              ref={dropdownRef}
+              className="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-20"
+            >
+              <div className="px-4 py-2 font-bold">
+                {session?.user?.name || "User"}
+              </div>
               <div className="text-sm px-4 pb-2">{session?.user?.email}</div>
-              <button onClick={() => signOut()} className="w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</button>
+              <button
+                onClick={() => signOut()}
+                className="w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                Sign Out
+              </button>
             </div>
           )}
         </div>
       </div>
     </nav>
   );
-};
-
-export default Navbar;
-
+}

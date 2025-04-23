@@ -24,6 +24,15 @@ export const forecasts = pgTable("forecasts", {
   weatherSymbol: text("weather_symbol"), // MET Værsymbolerosv ugh
 });
 
+// Table for weather data for notifications
+
+export const weatherData = pgTable("weather_data", {
+  id: serial("id").primaryKey(),
+  temperature: integer("temperature").notNull(),
+  windSpeed: integer("wind_speed").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // SSB Tables:
 
 export const Kommune = pgTable("Kommune", {

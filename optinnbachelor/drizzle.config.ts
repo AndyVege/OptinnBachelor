@@ -1,11 +1,17 @@
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
+  schema: './db/schemaWeather.ts',
   out: './drizzle',
-  schema: './db/schemaUser.ts',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_USER!,
+    url: process.env.DATABASE_URL!, // ✅ Not DATABASE_USER
   },
 });
+
+console.log("DB URL:", process.env.DATABASE_URL);
+
+
