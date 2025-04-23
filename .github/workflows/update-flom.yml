@@ -29,7 +29,7 @@ jobs:
      
       - name: Kjør flom-skriptet
         run: |
-          ppython optinnbachelor/scripts/AI.py
+          python optinnbachelor/scripts/AI.py
 
 
         env:
