@@ -1,12 +1,10 @@
-
 # .github/workflows/update-flom.yml
 name: Oppdater flom-projeksjon
 
-# Kjøre hver dag kl 02:00 UTC, og også manuelt via "Run workflow"
 on:
   schedule:
-    - cron: '0 2 * * *'
-  workflow_dispatch:
+    - cron: '0 2 * * *'    # Hver dag kl. 02:00 UTC
+  workflow_dispatch:       # Mulighet for manuell kjøring
 
 jobs:
   update-flom:
@@ -16,7 +14,7 @@ jobs:
       # 1) Sjekk ut koden
       - uses: actions/checkout@v3
 
-      # 2) Debug: List hele katalogstrukturen for å finne AI.py
+      # 2) Debug: list hele katalogstrukturen for å finne AI.py
       - name: Debug: List filer i workspace
         run: |
           echo "Working directory: $PWD"
@@ -34,7 +32,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandas numpy scikit-learn requests csvtojson
 
-      # 5) Kjør flom-skriptet (oppdater sti hvis debug-steget viser noe annet)
+      # 5) Kjør flom-skriptet (juster sti hvis debug-steget viser noe annet)
       - name: Kjør flom-skriptet
         run: python optinnbachelor/scripts/AI.py
         env:
@@ -42,7 +40,7 @@ jobs:
           FROST_CLIENT_SECRET: ${{ secrets.FROST_CLIENT_SECRET }}
           NVE_API_KEY:         ${{ secrets.NVE_API_KEY }}
 
-      # 6) Commit & push oppdatert CSV
+      # 6) Commit & push oppdatert CSV dersom den har endret seg
       - name: Commit & push oppdatert CSV
         run: |
           git config user.name "github-actions"
