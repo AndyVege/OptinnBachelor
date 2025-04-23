@@ -1,50 +1,43 @@
-# .github/workflows/update-flom.yml
 name: Oppdater flom-projeksjon
 
 on:
   schedule:
-    - cron: '0 2 * * *'    # Hver dag kl. 02:00 UTC
-  workflow_dispatch:       # Mulighet for manuell kjøring
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
   update-flom:
     runs-on: ubuntu-latest
-
     steps:
-      # 1) Sjekk ut koden
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      # 2) Debug: list hele katalogstrukturen for å finne AI.py
-      - name:Debug: List filer i workspace
+      - name: "Debug: list files in workspace"
         run: |
           echo "Working directory: $PWD"
           find . -maxdepth 4 | sed 's/^/   /'
 
-      # 3) Sett opp Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      # 4) Installer Python-avhengigheter
-      - name: Installer Python-avhengigheter
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pandas numpy scikit-learn requests csvtojson
 
-      # 5) Kjør flom-skriptet (juster sti hvis debug-steget viser noe annet)
-      - name: Kjør flom-skriptet
+      - name: Run flood script
         run: python optinnbachelor/scripts/AI.py
         env:
           FROST_CLIENT_ID:     ${{ secrets.FROST_CLIENT_ID }}
           FROST_CLIENT_SECRET: ${{ secrets.FROST_CLIENT_SECRET }}
           NVE_API_KEY:         ${{ secrets.NVE_API_KEY }}
 
-      # 6) Commit & push oppdatert CSV dersom den har endret seg
-      - name: Commit & push oppdatert CSV
+      - name: Commit & push CSV
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add optinnbachelor/data/latest_projisert_flom.csv
-          git diff --cached --quiet || git commit -m "Automatisk oppdatering av flom-data"
+          git diff --quiet || git commit -m "Automatisk oppdatering av flom-data"
           git push
