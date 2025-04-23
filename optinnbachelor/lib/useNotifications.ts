@@ -17,20 +17,6 @@ type UseNotificationsOptions = {
   pollIntervalMs?: number;
 };
 
-function mergeWithSample(
-  loaded: Notification[],
-  samples: Notification[]
-): Notification[] {
-  const merged = [...loaded];
-  samples.forEach((sample) => {
-    const found = merged.some((n) => n.id === sample.id);
-    if (!found) {
-      merged.push(sample);
-    }
-  });
-  return merged;
-}
-
 export function useNotifications({
   initialNotifications = [],
   pollIntervalMs = 10000,
@@ -39,11 +25,10 @@ export function useNotifications({
     try {
       const saved = localStorage.getItem("notifications");
       if (saved) {
-        const loaded: Notification[] = JSON.parse(saved).map((n: any) => ({
+        return JSON.parse(saved).map((n: any) => ({
           ...n,
           timestamp: new Date(n.timestamp),
         }));
-        return mergeWithSample(loaded, initialNotifications);
       }
     } catch (error) {
       console.error("Feil ved henting av localStorage:", error);
@@ -59,6 +44,7 @@ export function useNotifications({
           n.description === newAlert.description
       );
       if (isDuplicate) return prev;
+
       return [{ ...newAlert, source: newAlert.source || "auto" }, ...prev];
     });
   };

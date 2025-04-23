@@ -23,31 +23,82 @@ export async function GET() {
 
     const alerts = [];
 
-    if (item.windSpeed > 50) {
-      alerts.push({
-        title: "Kraftig vind – nivå 2",
-        description: `Sterk vind registrert: ${item.windSpeed} km/h. Ta forholdsregler.`,
-        priority: "high",
-        category: "Vær",
-      });
-    }
-
+    // Flomnivåer
     if (item.condition?.toLowerCase().includes("flom")) {
-      alerts.push({
-        title: "Flomfare – nivå 3",
-        description: "Kraftig nedbør har ført til økt vannstand.",
-        priority: "high",
-        category: "Vær",
-      });
+      if (item.windSpeed >= 75) {
+        alerts.push({
+          title: "Flomvarsel – nivå 3",
+          description: "Det er meldt om økt vannstand i elver og bekker i nærheten av din lokasjon.",
+          priority: "high",
+          category: "Vær",
+        });
+      } else if (item.windSpeed >= 50) {
+        alerts.push({
+          title: "Flomvarsel – nivå 2",
+          description: "Forhøyet vannstand registrert. Følg med på lokale oppdateringer.",
+          priority: "medium",
+          category: "Vær",
+        });
+      } else {
+        alerts.push({
+          title: "Flomvarsel – nivå 1",
+          description: "Normalt vannstandsnivå med liten risiko. Observer området ved endringer.",
+          priority: "low",
+          category: "Vær",
+        });
+      }
     }
 
+    // Skrednivåer
     if (item.condition?.toLowerCase().includes("skred")) {
-      alerts.push({
-        title: "Skredfare – nivå 2",
-        description: "Fare for jord- eller snøskred i området.",
-        priority: "high",
-        category: "Vær",
-      });
+      if (item.windSpeed >= 75) {
+        alerts.push({
+          title: "Skredvarsel – nivå 3",
+          description: "Høy fare for jord- eller snøskred. Unngå utsatte områder.",
+          priority: "high",
+          category: "Vær",
+        });
+      } else if (item.windSpeed >= 50) {
+        alerts.push({
+          title: "Skredvarsel – nivå 2",
+          description: "Moderat fare for skred. Vær aktsom i skråninger og bratt terreng.",
+          priority: "medium",
+          category: "Vær",
+        });
+      } else {
+        alerts.push({
+          title: "Skredvarsel – nivå 1",
+          description: "Lite sannsynlighet for skred. Normale forhold i området.",
+          priority: "low",
+          category: "Vær",
+        });
+      }
+    }
+
+    // Skogbrannnivåer
+    if (item.condition?.toLowerCase().includes("skogbrann")) {
+      if (item.windSpeed >= 75) {
+        alerts.push({
+          title: "Skogbrannfare – nivå 3",
+          description: "Ekstrem fare for skogbrann grunnet høy temperatur og sterk vind. Unngå all åpen ild.",
+          priority: "high",
+          category: "Vær",
+        });
+      } else if (item.windSpeed >= 50) {
+        alerts.push({
+          title: "Skogbrannfare – nivå 2",
+          description: "Moderat fare for skogbrann. Unngå grilling og bål i skog og utmark.",
+          priority: "medium",
+          category: "Vær",
+        });
+      } else {
+        alerts.push({
+          title: "Skogbrannfare – nivå 1",
+          description: "Liten risiko for skogbrann. Vis vanlig forsiktighet med ild utendørs.",
+          priority: "low",
+          category: "Vær",
+        });
+      }
     }
 
     if (alerts.length === 0) {

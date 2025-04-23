@@ -17,9 +17,9 @@ const client = postgres(process.env.DATABASE_URL);
 const db = drizzle(client);
 
 const testData = {
-  temperature: 15,
-  windSpeed: 77,
-  condition: "flom"
+  temperature: 25,
+  windSpeed: 89,
+  condition: "skogbrann"
 };
 
 async function seed() {

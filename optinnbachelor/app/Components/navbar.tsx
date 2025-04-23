@@ -6,47 +6,12 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { Check, Clock, Trash } from "lucide-react";
-
-// IMPORT av custom hook fra lib/useNotifications
-import { useNotifications, Notification } from "@/lib/useNotifications";
+import { useNotifications } from "@/lib/useNotifications";
 
 type NavbarProps = {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 };
-
-// Hvis du ønsker å ha noen "start" notifikasjoner, kan du beholde dette
-const sampleNotifications: Notification[] = [
-  {
-    id: "1",
-    title: "Flomvarsel i ditt område",
-    description:
-      "Det er meldt om økt vannstand i elver og bekker i nærheten av din lokasjon.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 30),
-    read: false,
-    priority: "high",
-    source: "manual",
-  },
-  {
-    id: "2",
-    title: "Kraftig vind de neste 24 timene",
-    description: "Meteorologisk institutt har sendt ut gult farevarsel for vind.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-    read: false,
-    priority: "medium",
-    source: "manual",
-  },
-  {
-    id: "3",
-    title: "Høyt polleninnhold i lufta",
-    description:
-      "Pollenvarselet for i dag viser høye nivåer av bjørk og gress.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-    read: true,
-    priority: "low",
-    source: "manual",
-  },
-];
 
 export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   const { data: session } = useSession();
@@ -56,7 +21,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
     setNotifications,
     removeAutoNotifications,
   } = useNotifications({
-    initialNotifications: sampleNotifications,
+    initialNotifications: [], // Start med 0 varsler
     pollIntervalMs: 10000,
   });
 
@@ -99,10 +64,8 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
   return (
     <nav className="bg-[#1E3528] text-white flex items-center justify-between py-4 px-10 rounded-[20px] w-full">
-      {/* Venstre side */}
       <div className="text-3xl font-bold font-sans">Optinn</div>
 
-      {/* Knapper i midten (Generelt, Vær, Helse) */}
       <div className="w-2/5 h-9 bg-[#366249] p-1 flex rounded-lg">
         {["Generelt", "Vær", "Helse"].map((tab) => (
           <div
@@ -117,11 +80,9 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
         ))}
       </div>
 
-      {/* Høyre side */}
       <div className="flex space-x-5 items-center relative">
         <FontAwesomeIcon className="w-5 h-5 cursor-pointer" icon={faGear} />
 
-        {/* VARSLINGSIKON & NOTIF-DROPDOWN */}
         <div className="relative">
           <button
             className="relative text-white hover:bg-[#366249] p-2 rounded-lg"
@@ -135,7 +96,6 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             )}
           </button>
 
-          {/* Selve varslingsdropdown */}
           {showNotifications && (
             <div
               ref={notificationRef}
@@ -210,7 +170,6 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
           )}
         </div>
 
-        {/* PROFILBILDE + DROPDOWN (samme som før) */}
         <div className="relative">
           <div
             onClick={() => setShowDropdown(!showDropdown)}
