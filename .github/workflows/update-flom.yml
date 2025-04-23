@@ -2,15 +2,6 @@
 # .github/workflows/update-flom.yml
 name: Oppdater flom-projeksjon
 
-steps:
-  - uses: actions/checkout@v3
-
-  - name: Debug: hent fil-struktur
-    run: |
-      echo "Arbeidsmappe: $PWD"
-      find . -maxdepth 4 | sed 's/^/   /'
-
-
 # Kjøre hver dag kl 02:00 UTC, og også manuelt via "Run workflow"
 on:
   schedule:
