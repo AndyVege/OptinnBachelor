@@ -1,3 +1,4 @@
+
 # .github/workflows/update-flom.yml
 name: Oppdater flom-projeksjon
 
@@ -30,6 +31,7 @@ jobs:
       - name: Kjør flom-skriptet
         run: |
           python optinnbachelor/scripts/AI.py
+
 
         env:
           FROST_CLIENT_ID: ${{ secrets.FROST_CLIENT_ID }}

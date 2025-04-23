@@ -50,7 +50,7 @@ export default function WeatherForecastModule({ locationId }: { locationId: numb
       <div className="absolute top-5 right-5">
         
       </div>
-      <h2 className="text-2xl font-bold mb-4 text-center">Værmelding(fjern h2 senere)</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">Værmelding</h2>
       <div className="flex justify-around text-center">
         {forecasts.map((f, idx) => (
           <div key={idx} className="p-3 border rounded-xl shadow-sm w-1/3 mx-1 transition-shadow duration-300 hover:shadow-md">
