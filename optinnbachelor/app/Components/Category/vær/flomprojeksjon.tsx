@@ -157,7 +157,7 @@ const FlomProjeksjon = () => {
           {/* Topp 10 flomdager – Valgt periode */}
           <div className="mb-5 border p-4 rounded-[30px]">
             <h3 className="text-center text-2xl font-bold mb-3">
-              Topp 10 flomdager – Valgt periode
+              Mest sannsynlige flomdager – Valgt periode
             </h3>
             {top10Period.length > 0 ? (
               top10Period.map((item) => (
