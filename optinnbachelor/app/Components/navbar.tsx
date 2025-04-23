@@ -91,11 +91,11 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
     <nav className="bg-[#1E3528] text-white flex items-center justify-between py-4 px-10 rounded-[20px] w-full">
       <div className="text-3xl font-bold font-sans">Optinn</div>
 
-      <div className="w-2/5 h-9 bg-[#366249] p-1 flex rounded-[20px]">
+      <div className="w-2/5 h-9 bg-[#366249] p-1 flex rounded-[8px]">
         {["Generelt", "Vær", "Helse"].map((tab) => (
           <div
             key={tab}
-            className={`flex-1 font-bold text-center rounded-[20px] cursor-pointer ${
+            className={`flex-1 font-bold text-center rounded-[8px] cursor-pointer ${
               activeTab === tab ? "bg-white text-green-900" : "bg-[#366249] opacity-50"
             }`}
             onClick={() => setActiveTab(tab)}
@@ -111,7 +111,7 @@ const Navbar = ({ activeTab, setActiveTab }: NavbarProps) => {
         {/* Varslingsikon med indikator */}
         <div className="relative">
           <button
-            className="relative text-white hover:bg-[#366249] p-2 rounded-lg"
+            className="relative text-white p-2 rounded-lg"
             onClick={() => setShowNotifications(!showNotifications)}
           >
             <FontAwesomeIcon className="w-5 h-5" icon={faBell} />
