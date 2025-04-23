@@ -20,7 +20,28 @@ const GenereltDashboard = () => {
   const [openKommune, setOpenKommune] = useState<boolean>(false);
   const [selectedYear, setSelectedYear] = useState<number | string>(2025);
   const [openYear, setOpenYear] = useState<boolean>(false);
+  const [openInfo, setOpenInfo] = useState<string|null>(null);
 
+  const infoTexts = {
+    population: "data er hentet fra ssb: 'https://data.ssb.no/api/v0/no/table/07091/'",
+    company: "data er hentet fra ssb:'https://data.ssb.no/api/v0/no/table/07091/'",
+    unemployment: "data er hentet fra ssb:unemployment",
+  };
+
+  const data_arbeidsledighet = [
+    { year: '2021', value: 20 },
+    { year: '2022', value: 25 },
+    { year: '2023', value: 15 },
+    { year: '2024', value: 27 },
+    { year: '2025', value: 19 },
+  ];
+  
+  const data_arbeidsledighet_fordeling = [
+    {name: '18-24', Men: 4000,Female: 2400},
+    {name: '25-35',Men: 3000,Female: 1398,},
+    {name: '36-55',Men: 2000,Female: 9800},
+    {name: '55-64',Men: 2780,Female: 3908},
+  ];
   const [Last5YearsPopulation, setLast5YearPopulation] = useState<
     {
       antallBefolkning: number;
@@ -123,8 +144,16 @@ const GenereltDashboard = () => {
           {/* Population */}
           <div className="bg-white rounded-3xl shadow-md w-full p-4 md:p-6">
             <div className="relative mb-3">
-              <FontAwesomeIcon icon={faCircleInfo} className="absolute right-0 top-0 w-5 h-5" />
-              <h2 className="text-center text-2xl md:text-3xl font-extrabold">Population</h2>
+              <FontAwesomeIcon 
+              icon={faCircleInfo} className="absolute right-0 top-0 w-5 h-5" 
+              onClick={() => setOpenInfo(openInfo === "population" ? null : "population")}
+                />
+                {openInfo === "population" && (
+                <div className="absolute top-5 right-3 z-50 bg-[#1E3528] text-white p-4 rounded-[8px] shadow-lg w-150 text-sm">
+                  {infoTexts.population}
+                </div>
+                )}
+              <h2 className="text-center text-2xl md:text-3xl font-extrabold">Befolkning</h2>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-6">
@@ -132,13 +161,13 @@ const GenereltDashboard = () => {
               <div className="w-full lg:w-1/2">
                 <div className="flex justify-around mb-4">
                   <div className="text-center">
-                    <p className="text-sm font-bold">Total Population</p>
+                    <p className="text-sm font-bold">Total Befolkning</p>
                     <p className="text-xl font-bold">
                       {thisYearPopulationData?.antallBefolkning?.toLocaleString()}
                     </p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold">Population Growth</p>
+                    <p className="text-sm font-bold">Befolkningsvekst</p>
                     {(() => {
                       const prev = Last5YearsPopulation.find(p => p.year === Number(selectedYear) - 1);
                       if (!prev || !thisYearPopulationData) return null;
@@ -195,18 +224,29 @@ const GenereltDashboard = () => {
 
           {/* Company Sector */}
           <div className="bg-white rounded-3xl shadow-md w-full p-4 md:p-6">
-            <h2 className="text-center text-2xl md:text-3xl font-extrabold mb-4">Company Sector</h2>
+            <div className="relative mb-3">
+                <FontAwesomeIcon 
+                  icon={faCircleInfo} className="absolute right-0 top-0 w-5 h-5" 
+                  onClick={() => setOpenInfo(openInfo === "company" ? null : "company")}
+                      />
+                {openInfo === "company" && (
+                <div className="absolute top-5 right-3 z-50 bg-[#1E3528] text-white p-4 rounded-[8px] shadow-lg w-150 text-sm">
+                  {infoTexts.company}
+                </div> 
+                )}
+                <h2 className="text-center text-2xl md:text-3xl font-extrabold mb-4">Næringssektor</h2>
+              </div>
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="w-full lg:w-1/2">
                 <div className="flex justify-around mb-4">
                   <div className="text-center">
-                    <p className="text-sm font-bold">Total Companies</p>
+                    <p className="text-sm font-bold">Total antall selskaper</p>
                     <p className="text-xl font-bold">
                       {thisYearCompanyData?.antallBedrifter?.toLocaleString()}
                     </p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold">Growth Since Last Year</p>
+                    <p className="text-sm font-bold">vekst siden i fjor</p>
                     {(() => {
                       const prev = Last5YearsCompany.find(p => p.year === Number(selectedYear) - 1);
                       if (!prev || !thisYearCompanyData) return null;
@@ -242,9 +282,9 @@ const GenereltDashboard = () => {
 
               <div className="w-full lg:w-1/2">
                 <p className="text-center font-semibold mb-2">
-                  Companies by number of employees
+                  Selskaper etter antall ansatte 
                 </p>
-                <div className="flex justify-between items-center">
+                <div className="flex items-center">
                   <ResponsiveContainer width="50%" height={180}>
                     <PieChart>
                       <Pie data={pieData2} innerRadius={40} outerRadius={70} paddingAngle={2} dataKey="value">
@@ -271,55 +311,68 @@ const GenereltDashboard = () => {
 
         {/* Unemployment Section */}
         <div className="bg-white rounded-3xl shadow-md p-4 flex flex-col gap-6">
-          <h2 className="text-center text-2xl md:text-3xl font-extrabold">Unemployment Stats</h2>
-          <ResponsiveContainer width="100%" height={180}>
-            <AreaChart data={[]} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <XAxis dataKey="year" />
+          <div className="relative mb-3">
+            <FontAwesomeIcon 
+              icon={faCircleInfo} className="absolute right-0 top-0 w-5 h-5" 
+              onClick={() => setOpenInfo(openInfo === "unemployment" ? null : "unemployment")}
+            />
+            {openInfo === "unemployment" && (
+              <div className="absolute top-5 right-3 z-50 bg-[#1E3528] text-white p-4 rounded-[8px] shadow-lg w-150 text-sm">
+                {infoTexts.unemployment}
+              </div>
+              )}
+            <h2 className="text-center text-xl md:text-2xl font-extrabold">Arbeidsledighetsstatistikk</h2>
+          </div>
+          <div className='w-full h-100'>
+            <ResponsiveContainer width="100%" height={180}>
+            <AreaChart data={data_arbeidsledighet} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <XAxis dataKey="year" axisLine={false} tickLine={false} interval={'preserveStartEnd'} />
               <Tooltip />
               <Area type="monotone" dataKey="value" stroke="#1E3528" fill="#1E3528" />
             </AreaChart>
           </ResponsiveContainer>
-
+          </div>
+    
           <div className="flex justify-between text-center">
             <div className="w-1/3">
-              <p className="text-xs font-bold">Total Unemployment</p>
+              <p className="text-xs font-bold">Total Arbeidsledighett</p>
               <p className="text-lg font-extrabold">20,000</p>
             </div>
             <div className="w-1/3">
-              <p className="text-xs font-bold">Unemployment Rate</p>
+              <p className="text-xs font-bold">Arbeidsledighetsrate</p>
               <p className="text-lg font-extrabold">18%</p>
             </div>
             <div className="w-1/3">
-              <p className="text-xs font-bold">Change Since Last Year</p>
+              <p className="text-xs font-bold">Endring siden i fjor</p>
               <p className="text-lg font-extrabold text-green-500">-1.1 ↓</p>
             </div>
           </div>
 
           <div className="flex justify-around items-center">
             <div className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faPerson} size="2x" />
+              <FontAwesomeIcon icon={faPerson} size="2x" color='#1E3528'/>
               <div>
-                <p className="font-bold">MEN</p>
+                <p className="font-bold">Menn</p>
                 <p className="text-xl font-extrabold">100000</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faPersonDress} size="2x" />
+              <FontAwesomeIcon icon={faPersonDress} size="2x" color="#366249" />
               <div>
-                <p className="font-bold">WOMEN</p>
+                <p className="font-bold">Kvinner</p>
                 <p className="text-xl font-extrabold">200000</p>
               </div>
             </div>
           </div>
 
           <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={[]}>
+            <BarChart data={data_arbeidsledighet_fordeling}>
               <XAxis dataKey="name" />
               <Tooltip />
               <Legend />
-              <Bar dataKey="Female" fill="#366249" />
               <Bar dataKey="Men" fill="#1E3528" />
+              <Bar dataKey="Female" fill="#366249" />
             </BarChart>
           </ResponsiveContainer>
         </div>
