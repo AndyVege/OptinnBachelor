@@ -87,10 +87,10 @@ const HelseDashboard = () => {
   const totalWomen = chartData.reduce((sum, curr) => sum + curr.Kvinner, 0);
 
   return (
-    <div className="p-4">
-      <h2 className='font-extrabold mt-5 text-4xl'>Hello, {session?.user?.name}</h2>
-      <h2 className='text-center font-extrabold text-4xl'>{selectedKommune}</h2>
-      <div className='flex gap-2 mb-6'>
+    <div className="py-5 px-4 sm:px-8">
+      <h2 className='font-extrabold mt-5 text-3xl sm:text-4xl'>Hello, {session?.user?.name}</h2>
+      <h2 className='text-center font-extrabold text-3xl sm:text-4xl'>{selectedKommune}</h2>
+      <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-60">
         <SelectMenu
           options={optionsKommune}
           open={openKommune}
@@ -107,67 +107,50 @@ const HelseDashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-5">
-        <div className="col-span-2 grid grid-rows-2 gap-5">
-          <div className="bg-white rounded-[30px] shadow-md h-80 w-full py-5">
-            <h3 className="text-center text-3xl font-extrabold mb-4">Sykefravær per kvartal</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="lg:col-span-2 grid grid-rows-2 gap-5">
+          <div className="bg-white rounded-2xl shadow-md h-80 w-full p-4">
+            <h3 className="text-center text-xl sm:text-2xl font-bold mb-4">Sykefravær per kvartal</h3>
             <ResponsiveContainer width="100%" height={240}>
-  <AreaChart data={chartData}>
-    <XAxis 
-      dataKey="kvartal" 
-      tickFormatter={(kvartal) => {
-        const str = kvartal.toString();
-        const year = str.slice(0, 4);
-        const q = str.slice(4);
-        return `K${q} ${year}`;
-      }} 
-    />
-    <YAxis 
-      tickFormatter={(val) => `${val}%`} 
-      domain={[0, 'auto']} 
-    />
-    <Tooltip 
-      formatter={(value: number) => `${value}%`}
-      labelFormatter={(kvartal: number) => {
-        const str = kvartal.toString();
-        const year = str.slice(0, 4);
-        const q = str.slice(4);
-        return `Kvartal: K${q} ${year}`;
-      }}
-    />
-    <Legend />
-    <Area 
-      type="monotone" 
-      dataKey="Menn" 
-      stroke="#2F3E34" 
-      fill="#BCE77B" 
-      strokeWidth={2} 
-      dot={{ r: 3 }} 
-    />
-    <Area 
-      type="monotone" 
-      dataKey="Kvinner" 
-      stroke="#1E3528" 
-      fill="#619b8a" 
-      strokeWidth={2} 
-      dot={{ r: 3 }} 
-    />
-  </AreaChart>
-</ResponsiveContainer>
+              <AreaChart data={chartData}>
+                <XAxis 
+                  dataKey="kvartal" 
+                  tickFormatter={(kvartal) => {
+                    const str = kvartal.toString();
+                    const year = str.slice(0, 4);
+                    const q = str.slice(4);
+                    return `K${q} ${year}`;
+                  }} 
+                />
+                <YAxis tickFormatter={(val) => `${val}%`} domain={[0, 'auto']} />
+                <Tooltip 
+                  formatter={(value: number) => `${value}%`}
+                  labelFormatter={(kvartal: number) => {
+                    const str = kvartal.toString();
+                    const year = str.slice(0, 4);
+                    const q = str.slice(4);
+                    return `Kvartal: K${q} ${year}`;
+                  }}
+                />
+                <Legend />
+                <Area type="monotone" dataKey="Menn" stroke="#2F3E34" fill="#BCE77B" strokeWidth={2} dot={{ r: 3 }} />
+                <Area type="monotone" dataKey="Kvinner" stroke="#1E3528" fill="#619b8a" strokeWidth={2} dot={{ r: 3 }} />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
 
-          <div className="bg-white rounded-[30px] shadow-md h-80 w-full py-5">
-            <h3 className="text-center text-3xl font-extrabold mb-4">Totalt sykefravær</h3>
+          <div className="bg-white rounded-2xl shadow-md h-80 w-full p-4">
+            <h3 className="text-center text-xl sm:text-2xl font-bold mb-4">Totalt sykefravær</h3>
             <div className="flex justify-around text-center mb-4">
               <div>
-                <FontAwesomeIcon icon={faPerson} color="#1E3528" size="3x" />
-                <p className="font-bold">MENN</p>
-                <p className="text-xl font-extrabold">{totalMen}</p>
+                <FontAwesomeIcon icon={faPerson} color="#1E3528" size="2x" />
+                <p className="font-semibold">MENN</p>
+                <p className="text-xl font-bold">{totalMen}</p>
               </div>
               <div>
-                <FontAwesomeIcon icon={faPersonDress} color="#366249" size="3x" />
-                <p className="font-bold">KVINNER</p>
-                <p className="text-xl font-extrabold">{totalWomen}</p>
+                <FontAwesomeIcon icon={faPersonDress} color="#366249" size="2x" />
+                <p className="font-semibold">KVINNER</p>
+                <p className="text-xl font-bold">{totalWomen}</p>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={180}>
@@ -182,8 +165,8 @@ const HelseDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-[30px] shadow-md h-full w-full flex flex-col px-5 pt-5">
-          <h2 className="text-center text-3xl font-extrabold mb-4">Sysselsatte i helse- og sosialnæringer</h2>
+        <div className="bg-white rounded-2xl shadow-md w-full p-4 flex flex-col">
+          <h2 className="text-center text-xl sm:text-2xl font-bold mb-4">Sysselsatte i helse- og sosialnæringer</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={sysselsatteChartData}>
               <XAxis dataKey="year" />
