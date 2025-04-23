@@ -28,7 +28,7 @@ jobs:
           pip install pandas numpy scikit-learn requests csvtojson
 
       - name: Run flood script
-        run: python optinnbachelor/scripts/AI.py
+        run: python optinnbachelor/Scripts/AI.py
         env:
           FROST_CLIENT_ID:     ${{ secrets.FROST_CLIENT_ID }}
           FROST_CLIENT_SECRET: ${{ secrets.FROST_CLIENT_SECRET }}
