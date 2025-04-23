@@ -1,15 +1,5 @@
 'use client';
-import {AreaChart,PieChart,BarChart,
-  XAxis,
-  ResponsiveContainer,
-  Area,
-  Tooltip,
-  Pie,
-  Cell,
-  Legend,
-  Bar,
-  YAxis,
-} from 'recharts';
+import {AreaChart,PieChart,BarChart,XAxis,ResponsiveContainer,Area,Tooltip,Pie,Cell,Legend,Bar,YAxis } from 'recharts';
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo, faPerson, faPersonDress } from '@fortawesome/free-solid-svg-icons';
