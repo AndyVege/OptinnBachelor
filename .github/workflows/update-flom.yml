@@ -29,7 +29,7 @@ jobs:
      
       - name: Kjør flom-skriptet
         run: |
-          cd /optinnbachelor/scripts
+          cd optinnbachelor/Scripts
           python AI.py
         env:
           FROST_CLIENT_ID: ${{ secrets.FROST_CLIENT_ID }}
