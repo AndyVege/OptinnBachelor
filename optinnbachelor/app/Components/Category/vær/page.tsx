@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react'
 import WeatherDisplay from "../../værDisplay";
 import FareIndikatorModul from '../../FareIndikatorModul';
