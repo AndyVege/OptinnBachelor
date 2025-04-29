@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react'
 import WeatherDisplay from "../../værDisplay";
 import FareIndikatorModul from '../../FareIndikatorModul';
@@ -17,12 +18,12 @@ export default function Home() {
 
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Optinn værdashboard 🌤️</h1>
+      <h2 className="text-center font-extrabold text-2xl sm:text-3xl md:text-4xl">{locations.find(loc => loc.id === selectedLocationId)?.name}</h2>
 
       <div className="flex gap-2 w-60 mb-6">
         <Listbox value={selectedLocationId} onChange={setSelectedLocationId}>
           <div className="relative w-60">
-            <ListboxButton className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-left">
+            <ListboxButton className="w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm bg-white text-left">
               {locations.find(loc => loc.id === selectedLocationId)?.name}
             </ListboxButton>
             <ListboxOptions className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
