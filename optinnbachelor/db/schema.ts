@@ -2,17 +2,17 @@ import { pgTable, serial, numeric, text, varchar, jsonb, timestamp, integer } fr
 
 
 
-
 // VARSOM API:
 
-export const riskLevels = pgTable('risk_levels', {
+export const riskLevels = pgTable("riskLevels", {
   id: text('id').primaryKey(),
   location: text('location').notNull(),      // F.eks "Oslo"
   riskType: text('risk_type').notNull(),     // "flom", "snøskred", "jordskred"
   level: integer('level').notNull(),         // 1–5
   validFrom: timestamp('valid_from', { withTimezone: true }).notNull(),
   validTo: timestamp('valid_to', { withTimezone: true }).notNull()
-})
+});
+
 
 // MET Tables:
 

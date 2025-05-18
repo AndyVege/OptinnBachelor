@@ -1,0 +1,440 @@
+{
+  "id": "fe1c6db5-d6d8-47a4-b80e-669f1a6d06b9",
+  "prevId": "f30b2204-6600-4f19-98e7-4d5cad82dfd1",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.Arbeidsledighet": {
+      "name": "Arbeidsledighet",
+      "schema": "",
+      "columns": {
+        "arbeidsledighet_id": {
+          "name": "arbeidsledighet_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "kommuneId": {
+          "name": "kommuneId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "år": {
+          "name": "år",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "antallArbeidsledighet": {
+          "name": "antallArbeidsledighet",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "antallMenn": {
+          "name": "antallMenn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "antallKvinner": {
+          "name": "antallKvinner",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aldersfordeling": {
+          "name": "aldersfordeling",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Arbeidsledighet_kommuneId_Kommune_kommuneId_fk": {
+          "name": "Arbeidsledighet_kommuneId_Kommune_kommuneId_fk",
+          "tableFrom": "Arbeidsledighet",
+          "tableTo": "Kommune",
+          "columnsFrom": [
+            "kommuneId"
+          ],
+          "columnsTo": [
+            "kommuneId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.Bedrift": {
+      "name": "Bedrift",
+      "schema": "",
+      "columns": {
+        "bedriftId": {
+          "name": "bedriftId",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "kommuneId": {
+          "name": "kommuneId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "år": {
+          "name": "år",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "antallBedrifter": {
+          "name": "antallBedrifter",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fordeling": {
+          "name": "fordeling",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Bedrift_kommuneId_Kommune_kommuneId_fk": {
+          "name": "Bedrift_kommuneId_Kommune_kommuneId_fk",
+          "tableFrom": "Bedrift",
+          "tableTo": "Kommune",
+          "columnsFrom": [
+            "kommuneId"
+          ],
+          "columnsTo": [
+            "kommuneId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.Befolkning": {
+      "name": "Befolkning",
+      "schema": "",
+      "columns": {
+        "befolkning_id": {
+          "name": "befolkning_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "kommuneId": {
+          "name": "kommuneId",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "år": {
+          "name": "år",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "antall_befolkning": {
+          "name": "antall_befolkning",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "født": {
+          "name": "født",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "døde": {
+          "name": "døde",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aldersfordeling": {
+          "name": "aldersfordeling",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Befolkning_kommuneId_Kommune_kommuneId_fk": {
+          "name": "Befolkning_kommuneId_Kommune_kommuneId_fk",
+          "tableFrom": "Befolkning",
+          "tableTo": "Kommune",
+          "columnsFrom": [
+            "kommuneId"
+          ],
+          "columnsTo": [
+            "kommuneId"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.Kommune": {
+      "name": "Kommune",
+      "schema": "",
+      "columns": {
+        "kommuneId": {
+          "name": "kommuneId",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "kommunenavn": {
+          "name": "kommunenavn",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.forecasts": {
+      "name": "forecasts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "location_id": {
+          "name": "location_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "temperature": {
+          "name": "temperature",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wind_speed": {
+          "name": "wind_speed",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "precipitation": {
+          "name": "precipitation",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "weather_symbol": {
+          "name": "weather_symbol",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "forecasts_location_id_locations_id_fk": {
+          "name": "forecasts_location_id_locations_id_fk",
+          "tableFrom": "forecasts",
+          "tableTo": "locations",
+          "columnsFrom": [
+            "location_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.locations": {
+      "name": "locations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "locations_name_unique": {
+          "name": "locations_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.riskLevels": {
+      "name": "riskLevels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "location": {
+          "name": "location",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "risk_type": {
+          "name": "risk_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "level": {
+          "name": "level",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valid_to": {
+          "name": "valid_to",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.weather_data": {
+      "name": "weather_data",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "temperature": {
+          "name": "temperature",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wind_speed": {
+          "name": "wind_speed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
