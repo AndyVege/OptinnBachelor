@@ -7,14 +7,13 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { Check, Clock, Trash } from "lucide-react";
 import { useNotifications, Notification } from "@/lib/useNotifications";
-import { useRouter } from "next/navigation";
 
 type NavbarProps = {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 };
 
-export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
+export default function Navbarwithout() {
   const { data: session } = useSession();
 
   const {
@@ -32,8 +31,6 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-
-  const router = useRouter();
 
   const unreadCount = notifications.filter((n: Notification) => !n.read).length;
 
@@ -69,31 +66,14 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   };
 
   const handleTabClick = (tab: string) => {
-    setActiveTab(tab);
     setIsMobileMenuOpen(false);
   };
 
   return (
     <nav className="bg-[#1E3528] text-white flex items-center justify-between py-4 px-10 rounded-[20px] w-full relative shadow-lg">
       {/* Logo */}
-      <div className="text-2xl sm:text-3xl font-bold font-sans hover:text-green-300 transition-colors duration-200" onClick={() => router.push("/")}>
+      <div className="text-2xl sm:text-3xl font-bold font-sans hover:text-green-300 transition-colors duration-200">
         Optinn
-      </div>
-
-      <div className=" hidden md:flex  w-2/5 h-9 bg-[#366249] p-1 gap-1 justify-between rounded-[8px]">
-        {["Generelt", "Vær", "Helse"].map((tab) => (
-          <div
-            key={tab}
-            className={`flex-1 font-bold text-center rounded-[8px] cursor-pointer transition-all duration-200 ${
-              activeTab === tab 
-                ? "bg-white text-green-900 transform scale-105" 
-                : "bg-[#366249] opacity-50 hover:opacity-75"
-            }`}
-            onClick={() => handleTabClick(tab)}
-          >
-            {tab}
-          </div>
-        ))}
       </div>
 
       {/* Desktop Right Section */}
@@ -215,22 +195,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
       >
         <div className="p-3 space-y-4">
           
-          {/* Mobile Navigation Tabs */}
-          <div className="flex flex-col space-y-2">
-            {["Generelt", "Vær", "Helse"].map((tab) => (
-              <div
-                key={tab}
-                className={`font-semibold text-center py-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                  activeTab === tab 
-                    ? "bg-white text-green-900 scale-[1.02]" 
-                    : "bg-[#366249] text-white opacity-80 hover:opacity-100"
-                }`}
-                onClick={() => handleTabClick(tab)}
-              >
-                {tab}
-              </div>
-            ))}
-          </div>
+         
 
           {/* Sign Out Button */}
           <div className="pt-2 border-t border-[#2B4C3A]">
@@ -243,9 +208,8 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
           </div>
         </div>
       </div>
-)}
-</div>
-
+    )}
+    </div>
 
     </nav>
   );
