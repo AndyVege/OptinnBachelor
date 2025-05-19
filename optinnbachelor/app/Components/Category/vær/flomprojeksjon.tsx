@@ -179,7 +179,7 @@ const FlomProjeksjon = () => {
               onClick={() => setExpanded(!expanded)}
             >
               <h3 className="text-center text-2xl font-bold">
-                Topp 10 flomdager
+                Topp 10 projekterte flomdager
               </h3>
               <button className="text-sm text-blue-600">
                 {expanded ? 'Skjul' : 'Vis mer'}

@@ -4,7 +4,7 @@ dotenv.config({ path: '.env.local' });
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
-  schema: './db/schemaWeather.ts',
+  schema: './db/schema.ts',
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {

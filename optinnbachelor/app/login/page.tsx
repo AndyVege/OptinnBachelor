@@ -12,8 +12,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const schema = z.object({
-  email: z.string().email({ message: "Invalid email" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  email: z.string().email({ message: "Ugyldig email" }),
+  password: z.string().min(6, { message: "Passord må inneholde minst 6 tegn" }),
 });
 
 export default function LoginPage() {
@@ -34,7 +34,7 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
-      setError("Invalid email or password");
+      setError("Ugyldig email eller passord");
     } else {
       router.push("/");
     }
@@ -47,7 +47,7 @@ export default function LoginPage() {
       </div>
 
       <div className="bg-white mt-32 sm:mt-20 p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h3 className="text-2xl sm:text-3xl text-center font-extrabold mb-8 text-[#1E3528]">Login</h3>
+        <h3 className="text-2xl sm:text-3xl text-center font-extrabold mb-8 text-[#1E3528]">Logg inn</h3>
 
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
@@ -59,7 +59,7 @@ export default function LoginPage() {
               <FaEnvelope className="text-gray-500" />
               <input
                 type="email"
-                placeholder="Enter your Email"
+                placeholder="Skriv inn Email"
                 {...register("email")}
                 className="w-full outline-none bg-transparent ml-2 text-sm"
               />
@@ -68,12 +68,12 @@ export default function LoginPage() {
 
           <div>
             {errors.password && <p className="text-red-500 mb-1 text-sm">{errors.password.message}</p>}
-            <label className="block text-gray-600 text-sm">Password</label>
+            <label className="block text-gray-600 text-sm">Passord</label>
             <div className="flex items-center border rounded-[8px] px-3 py-2 mt-1 bg-gray-50">
               <FaLock className="text-gray-500" />
               <input
                 type="password"
-                placeholder="Enter your Password"
+                placeholder="Skriv inn ditt Passord"
                 {...register("password")}
                 className="w-full outline-none bg-transparent ml-2 text-sm"
               />
@@ -81,15 +81,15 @@ export default function LoginPage() {
           </div>
 
           <div className="flex justify-center text-sm mb-4">
-            <a href="#" className="text-[#1E3528] hover:underline">Forgot Password?</a>
+            <a href="#" className="text-[#1E3528] hover:underline">Glemt Passord?</a>
           </div>
 
           <button type="submit" className="w-full bg-[#1E3528] text-white py-2 rounded-[8px] hover:bg-[#366249] transition">
-            Login
+            Logg inn
           </button>
         </form>
 
-        <div className="text-center my-4 text-sm text-gray-500">Or</div>
+        <div className="text-center my-4 text-sm text-gray-500">Eller</div>
 
         <div className="flex flex-col gap-3">
           <button
@@ -97,7 +97,7 @@ export default function LoginPage() {
             onClick={() => signIn("google")}
           >
             <FcGoogle className="mr-2 text-lg" />
-            Login with Google
+            Logg inn med Google
           </button>
 
           <button
@@ -105,13 +105,13 @@ export default function LoginPage() {
             onClick={() => signIn("github", { callbackUrl: "/" })}
           >
             <IoLogoGithub className="mr-2 text-lg" />
-            Login with Github
+            Logg inn med Github
           </button>
         </div>
 
         <p className="text-center text-gray-600 text-sm mt-4">
-          Don’t have an account?{" "}
-          <Link href="/signUp" className="text-blue-600 hover:underline">Create here</Link>
+          Har du ikke bruker?{" "}
+          <Link href="/signUp" className="text-blue-600 hover:underline">Registrer deg her</Link>
         </p>
       </div>
     </div>

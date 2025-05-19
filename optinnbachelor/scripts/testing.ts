@@ -18,8 +18,8 @@ const db = drizzle(client);
 
 const testData = {
   temperature: 25,
-  windSpeed: 89,
-  condition: "skogbrann"
+  windSpeed: 78,
+  condition: "Skred"
 };
 
 async function seed() {
