@@ -6,14 +6,14 @@ dotenv.config({ path: ".env.local" });
 // --- SLIK VELGER DU TEST‐DATA — endre her: ---
 const testData = {
   // Velg én av: "flom", "skred" eller "skogbrann"
-  condition:  "skogbrann",
+  condition:  "Skred",
 
   // Sett vindhastighet (km/t):
-  windSpeed:  49,
+  windSpeed:  20,
 
   // Sett temperatur (°C):
   // (kun relevant for skogbrann, men må alltid oppgis)
-  temperature: 28,
+  temperature: 20,
 };
 // ------------------------------------------------
 

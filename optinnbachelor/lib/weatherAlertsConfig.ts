@@ -1,4 +1,4 @@
-// lib/weatherAlertsConfig.ts
+
 export type Priority = "low" | "medium" | "high";
 
 export interface WeatherAlertConfig {
@@ -11,7 +11,6 @@ export interface WeatherAlertConfig {
   };
   thresholds: {
     windSpeed: { high: number; medium: number };
-    // Legg til temperatur‐terskler kun for skogbrann
     temperature?: { high: number; medium: number };
   };
 }
@@ -25,9 +24,7 @@ export const WEATHER_ALERTS_CONFIG: WeatherAlertConfig[] = [
       medium: "Forhøyet vannstand registrert. Følg med på lokale oppdateringer.",
       high: "Det er meldt om økt vannstand i elver og bekker i nærheten av din lokasjon.",
     },
-    thresholds: {
-      windSpeed: { high: 75, medium: 50 },
-    },
+    thresholds: { windSpeed: { high: 75, medium: 50 } },
   },
   {
     name: "Skredvarsel",
@@ -37,9 +34,7 @@ export const WEATHER_ALERTS_CONFIG: WeatherAlertConfig[] = [
       medium: "Moderat fare for skred. Vær aktsom i skråninger og bratt terreng.",
       high: "Høy fare for jord- eller snøskred. Unngå utsatte områder.",
     },
-    thresholds: {
-      windSpeed: { high: 75, medium: 50 },
-    },
+    thresholds: { windSpeed: { high: 75, medium: 50 } },
   },
   {
     name: "Skogbrannfare",
@@ -50,8 +45,10 @@ export const WEATHER_ALERTS_CONFIG: WeatherAlertConfig[] = [
       high: "Ekstrem fare for skogbrann grunnet høy temperatur og sterk vind. Unngå all åpen ild.",
     },
     thresholds: {
-      windSpeed:    { high: 75, medium: 50 },
-      temperature:  { high: 30, medium: 20 },  // ← her
+      windSpeed: { high: 75, medium: 50 },
+      temperature: { high: 30, medium: 20 },
     },
   },
+
+
 ];

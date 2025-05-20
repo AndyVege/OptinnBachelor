@@ -1,7 +1,7 @@
 "use client";
 
 import Navbar from "@/app/Components/navbar";
-import UtvidetVarslingSystem from "@/app/Components/UtvidetVarslingsystem";
+import UtvidetVarslingsystem from "@/app/Components/UtvidetVarslingsystem";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -13,20 +13,23 @@ export default function UtvidetVarslerSide() {
     setActiveTab(tab);
     switch (tab) {
       case "Generelt":
-        return router.push("/");
+        router.push("/mainPage");
+        break;
       case "Vær":
-        return router.push("/Components/Category/vær");
+        router.push("/varsler/utvidet");
+        break;
       case "Helse":
-        return router.push("/Components/Category/helse");
+        router.push("/Components/Category/helse");
+        break;
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#E3F1F2]"> {/* Samme bakgrunn som globals.css */}
+    <div className="min-h-screen bg-[#E3F1F2]">
       <Navbar activeTab={activeTab} setActiveTab={handleTabClick} />
-      <div className="p-6">
-        <UtvidetVarslingSystem onClose={() => {}} showCloseButton={false} />
-      </div>
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        <UtvidetVarslingsystem />
+      </main>
     </div>
   );
 }
