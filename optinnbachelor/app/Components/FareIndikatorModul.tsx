@@ -27,11 +27,12 @@ const hazardData = [
   export default function FareIndikatorModul() {
     return (
       <div className="bg-white rounded-[30px] shadow-md p-5 w-2/3 max-w-2xl">
+        <h2 className="text-2xl font-bold mb-4 text-center">Fareindikator</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {hazardData.map((hazard, index) => (
             <div
               key={index}
-              className="flex flex-col items-center justify-between bg-white p-6 rounded-2xl shadow-md w-48 border border-gray-200 hover:shadow-lg transition-shadow"
+              className="flex flex-col items-center justify-between bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md h-[232px] w-full"
             >
               <div className="text-5xl mb-4">
                 {hazard.icon}
