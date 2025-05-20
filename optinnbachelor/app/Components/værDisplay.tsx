@@ -1,6 +1,8 @@
 "use client";
 import LinkVidere from "./linkVidere";
 import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 type Forecast = {
   id: number;
@@ -14,6 +16,7 @@ type Forecast = {
 
 export default function WeatherForecastModule({ locationId }: { locationId: number | null }) {
   const [forecasts, setForecasts] = useState<Forecast[]>([]);
+  const [openInfo, setOpenInfo] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,10 +50,19 @@ export default function WeatherForecastModule({ locationId }: { locationId: numb
 
   return (
       <div className="relative bg-white rounded-[30px] shadow-md pt-5 px-5 pb-1 w-1/2 max-w-3xl">
-      <div className="absolute top-5 right-5">
-        
+      <div className="relative mb-4">
+        <FontAwesomeIcon 
+          icon={faCircleInfo} 
+          className="absolute right-0 top-0 w-5 h-5 cursor-pointer" 
+          onClick={() => setOpenInfo(openInfo === "weather" ? null : "weather")}
+        />
+        {openInfo === "weather" && (
+          <div className="absolute top-5 right-3 z-50 bg-[#1E3528] text-white p-4 rounded-[8px] shadow-lg w-150 text-sm">
+            <a href="https://api.met.no">{"Data hentet fra MET API"}</a>
+          </div>
+        )}
+        <h2 className="text-2xl font-bold mb-4 text-center">Værmelding</h2>
       </div>
-      <h2 className="text-2xl font-bold mb-4 text-center">Værmelding</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-center">
         {forecasts.map((f, idx) => (
           <div key={idx} className="pt-5 px-3 pb-2 border rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-md h-[232px]">

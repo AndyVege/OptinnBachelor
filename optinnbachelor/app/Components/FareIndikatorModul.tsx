@@ -1,4 +1,6 @@
-import React from "react";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
 
 const hazardData = [
     {
@@ -25,9 +27,22 @@ const hazardData = [
   ];
   
   export default function FareIndikatorModul() {
+    const [openInfo, setOpenInfo] = useState<string | null>(null);
     return (
       <div className="bg-white rounded-[30px] shadow-md p-5 w-2/3 max-w-2xl">
-        <h2 className="text-2xl font-bold mb-4 text-center">Fareindikator</h2>
+        <div className="relative mb-4">
+          <FontAwesomeIcon 
+            icon={faCircleInfo} 
+            className="absolute right-0 top-0 w-5 h-5 cursor-pointer" 
+            onClick={() => setOpenInfo(openInfo === "hazard" ? null : "hazard")}
+          />
+          {openInfo === "hazard" && (
+            <div className="absolute top-5 right-3 z-50 bg-[#1E3528] text-white p-4 rounded-[8px] shadow-lg w-150 text-sm">
+              <a href="https://www.varsom.no" target="_blank" rel="noopener noreferrer">Data hentet fra Varsom (NVE)</a>
+            </div>
+          )}
+          <h2 className="text-2xl font-bold text-center">Fareindikator</h2>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {hazardData.map((hazard, index) => (
             <div
