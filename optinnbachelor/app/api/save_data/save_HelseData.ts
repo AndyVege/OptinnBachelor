@@ -14,10 +14,10 @@ type FetchedData = {
 
 export async function save_HelseData(): Promise<boolean> {
   try {
-    console.log("🟡 Startet lagring av HelseData");
+    console.log("Startet lagring av HelseData");
     const apiData: FetchedData | null = await fetch_HelseData();
     if (!apiData){ 
-        console.log("❌ Ingen data fra fetch_HelseData");
+        console.log("Ingen data fra fetch_HelseData");
         return false;
     }
 
@@ -38,7 +38,7 @@ export async function save_HelseData(): Promise<boolean> {
         const kvinner = Number(values[index + 1]);
 
 
-        const kvartal = kvartalLabel.replace("K", ""); // "2024K1" -> "20241"
+        const kvartal = kvartalLabel.replace("K", "");
 
         helseEntries.push({
           sykefravaerId: index,
