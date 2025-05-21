@@ -1,5 +1,4 @@
 "use client";
-import LinkVidere from "./linkVidere";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
@@ -35,7 +34,7 @@ export default function WeatherForecastModule({ locationId }: { locationId: numb
 
       const now = new Date();
       const forecastsByHour = [0, 4, 8].map(offset => {
-        return sorted.find(f => {
+        return sorted.find((f: Forecast) => {
           const forecastTime = new Date(f.time);
           const targetTime = new Date(now.getTime() + offset * 60 * 60 * 1000);
           return Math.abs(forecastTime.getTime() - targetTime.getTime()) < 60 * 60 * 1000;
