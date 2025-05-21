@@ -1,7 +1,7 @@
 'use client'
 import * as React from 'react'
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Navbar from './Components/navbar';
 import GenereltDashboard from './Components/Category/generelt';
@@ -10,13 +10,12 @@ import VærDashboard from './Components/Category/vær/page';
 import MainDashboard from './Components/Category/MainDashboard';
 import UtvidetVarslingsystem from './Components/UtvidetVarslingsystem';
 
-export default function Home({ searchParams }: { searchParams?: { tab?: string } }) {
+export default function Home() {
   const { status } = useSession();
   const router = useRouter();
 
-
-
   const [activeTab, setActiveTab] =  useState<string>(''); // initialize with fallback
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -24,6 +23,12 @@ export default function Home({ searchParams }: { searchParams?: { tab?: string }
     }
   }, [status, router]);
 
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (activeTab) {
