@@ -14,19 +14,16 @@ export type Notification = {
 
 export function useNotifications({ pollIntervalMs = 10000 } = {}) {
   const [notifications, setNotifications] = useState<Notification[]>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem("notifications");
-        if (saved) {
-          return JSON.parse(saved).map((n: any) => ({
-            ...n,
-            timestamp: new Date(n.timestamp),
-          }));
-        }
-      } catch {
-        console.error("Feil ved henting av localStorage");
+    try {
+      const saved = localStorage.getItem("notifications");
+      if (saved) {
+        return JSON.parse(saved).map((n: any) => ({
+          ...n,
+          timestamp: new Date(n.timestamp),
+        }));
       }
-      return [];
+    } catch {
+      console.error("Feil ved henting av localStorage");
     }
     return [];
   });
@@ -75,9 +72,7 @@ export function useNotifications({ pollIntervalMs = 10000 } = {}) {
   }, [pollIntervalMs]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("notifications", JSON.stringify(notifications));
-    }
+    localStorage.setItem("notifications", JSON.stringify(notifications));
   }, [notifications]);
 
   return {
