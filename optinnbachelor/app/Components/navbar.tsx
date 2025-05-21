@@ -73,7 +73,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
 
       {/* Desktop Tabs */}
       <div className="hidden md:flex w-2/5 h-9 bg-[#366249] p-1 gap-1 justify-between rounded-[8px]">
-        {["Generelt", "Vær", "Helse"].map((tab) => (
+        {["Befolkning", "Vær", "Helse"].map((tab) => (
           <div
             key={tab}
             className={`flex-1 font-bold text-center rounded-[8px] cursor-pointer transition-all duration-200 ${
