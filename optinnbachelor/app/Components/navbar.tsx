@@ -67,7 +67,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   return (
     <nav className="bg-[#1E3528] text-white flex items-center justify-between py-4 px-10 rounded-[20px] w-full relative shadow-lg">
       {/* Logo */}
-      <div className="text-2xl sm:text-3xl font-bold font-sans hover:text-green-300 transition-colors duration-200" onClick={()=> setActiveTab('')} >
+      <div className="text-2xl sm:text-3xl font-bold font-sans hover:text-green-300 transition-colors duration-200 cursor-pointer " onClick={()=> setActiveTab('')} >
         Optinn
       </div>
 
