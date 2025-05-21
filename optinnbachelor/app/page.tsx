@@ -33,10 +33,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (activeTab) {
-      localStorage.setItem('activeTab', activeTab);
-    }
-  }, [activeTab]);
+  if (typeof window !== 'undefined' && activeTab) {
+    localStorage.setItem('activeTab', activeTab);
+  }
+}, [activeTab]);
 
   const renderDashboard = () => {
     switch (activeTab) {
