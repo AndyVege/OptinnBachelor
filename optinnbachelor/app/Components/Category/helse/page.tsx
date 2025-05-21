@@ -122,8 +122,11 @@ const HelseDashboard = () => {
 
   return (
     <div className="py-5 px-4 sm:px-8">
-
-      <h2 className="text-center font-extrabold text-2xl sm:text-3xl md:text-4xl">{selectedKommune}</h2>
+      
+       <div className="pr-[50px]">
+        <h2 className="font-extrabold text-2xl sm:text-3xl md:text-4xl">Hei, {session?.user?.name}</h2>
+        <h2 className="text-center font-extrabold text-2xl sm:text-3xl md:text-4xl">{selectedKommune}</h2>  
+      </div>
 
       {/* Kommune dropdown only on the left */}
       <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-60">

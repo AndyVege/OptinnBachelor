@@ -5,6 +5,7 @@ import FareIndikatorModul from '../../FareIndikatorModul';
 import SelectMenu from '../../selectMenu';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 import FlomProjeksjon from "./flomprojeksjon"; // Importer den nye flom-projeksjonskomponenten
+import { useSession } from 'next-auth/react';
 
 
 
@@ -15,10 +16,15 @@ export default function Home() {
     { id: 3, name: "Larvik" },
   ]);
   const [selectedLocationId, setSelectedLocationId] = useState<number>(1);
+  const { data: session } = useSession();
 
   return (
     <main className="p-8">
-      <h2 className="text-center font-extrabold text-2xl sm:text-3xl md:text-4xl">{locations.find(loc => loc.id === selectedLocationId)?.name}</h2>
+       <div className="pr-[50px]">
+        <h2 className="font-extrabold text-2xl sm:text-3xl md:text-4xl">Hei, {session?.user?.name}</h2>
+        <h2 className="font-extrabold text-center text-2xl sm:text-3xl md:text-4xl">{locations.find(loc => loc.id === selectedLocationId)?.name}</h2>
+      </div>
+
 
       <div className="flex gap-2 w-60 mb-6">
         <Listbox value={selectedLocationId} onChange={setSelectedLocationId}>
