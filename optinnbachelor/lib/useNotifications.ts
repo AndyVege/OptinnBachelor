@@ -2,25 +2,17 @@
 import { useState, useEffect } from "react";
 
 export type Notification = {
-  id: string;
+  id: string;           
   title: string;
   description?: string;
   timestamp: Date;
   read: boolean;
-  priority?: "low" | "medium" | "high";
-  category?: "Vær" | "Helse" | "Generelt";
-  source?: "auto" | "manual";
+  priority?: "low"|"medium"|"high";
+  category?: "Vær"|"Helse"|"Generelt";
+  source?: "auto"|"manual";
 };
 
-type UseNotificationsOptions = {
-  initialNotifications?: Notification[];
-  pollIntervalMs?: number;
-};
-
-export function useNotifications({
-  initialNotifications = [],
-  pollIntervalMs = 10000,
-}: UseNotificationsOptions = {}) {
+export function useNotifications({ pollIntervalMs = 10000 } = {}) {
   const [notifications, setNotifications] = useState<Notification[]>(() => {
     try {
       const saved = localStorage.getItem("notifications");
@@ -30,27 +22,24 @@ export function useNotifications({
           timestamp: new Date(n.timestamp),
         }));
       }
-    } catch (error) {
-      console.error("Feil ved henting av localStorage:", error);
+    } catch {
+      console.error("Feil ved henting av localStorage");
     }
-    return initialNotifications;
+    return [];
   });
 
   const addNotification = (newAlert: Notification) => {
-    setNotifications((prev) => {
-      const isDuplicate = prev.some(
-        (n) =>
-          n.title === newAlert.title &&
-          n.description === newAlert.description
-      );
-      if (isDuplicate) return prev;
-
-      return [{ ...newAlert, source: newAlert.source || "auto" }, ...prev];
-    });
+    setNotifications(prev =>
+      prev.some(n => n.id === newAlert.id) ? prev : [{ ...newAlert, source: "auto" }, ...prev]
+    );
   };
 
   const removeAutoNotifications = () => {
-    setNotifications((prev) => prev.filter((n) => n.source !== "auto"));
+    setNotifications(prev => prev.filter(n => n.source !== "auto"));
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
   useEffect(() => {
@@ -58,23 +47,22 @@ export function useNotifications({
       try {
         const res = await fetch("/api/weatherAlerts");
         const data = await res.json();
-
-        if (data.alerts) {
-          data.alerts.forEach((alert: any) => {
+        if (Array.isArray(data.alerts)) {
+          data.alerts.forEach((alert: any) =>
             addNotification({
-              id: crypto.randomUUID(),
+              id: alert.id,
               title: alert.title,
               description: alert.description,
               timestamp: new Date(),
               read: false,
-              priority: alert.priority || "medium",
-              category: alert.category || "Generelt",
+              priority: alert.priority,
+              category: alert.category,
               source: "auto",
-            });
-          });
+            })
+          );
         }
-      } catch (error) {
-        console.error("Feil ved henting av værvarsel:", error);
+      } catch (e) {
+        console.error("Feil ved henting av værvarsel:", e);
       }
     };
 
@@ -92,5 +80,6 @@ export function useNotifications({
     setNotifications,
     addNotification,
     removeAutoNotifications,
+    markAllAsRead,
   };
 }

@@ -1,3 +1,4 @@
+// app/Components/navbarwithout.tsx
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,27 +8,26 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { Check, Clock, Trash } from "lucide-react";
 import { useNotifications, Notification } from "@/lib/useNotifications";
-
-type NavbarProps = {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-};
+import { useRouter } from "next/navigation";
 
 export default function Navbarwithout() {
   const { data: session } = useSession();
+  const router = useRouter();
 
+  // ✂️ Removed `initialNotifications`
   const {
     notifications,
     setNotifications,
     removeAutoNotifications,
+    markAllAsRead,
   } = useNotifications({
-    initialNotifications: [],
-    pollIntervalMs: 10000,
+    pollIntervalMs: 10000, 
   });
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -37,62 +37,53 @@ export default function Navbarwithout() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) &&
-        (notificationRef.current && !notificationRef.current.contains(event.target as Node))
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
       ) {
         setShowDropdown(false);
         setShowNotifications(false);
         setIsMobileMenuOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const markAllAsRead = () => {
-    setNotifications((prev: Notification[]) =>
-      prev.map((n: Notification) => ({ ...n, read: true }))
-    );
-  };
-
   const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    if (diffInSeconds < 60) return `${diffInSeconds} sek siden`;
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} min siden`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} timer siden`;
-    return `${Math.floor(diffInSeconds / 86400)} dager siden`;
-  };
-
-  const handleTabClick = (tab: string) => {
-    setIsMobileMenuOpen(false);
+    const now = Date.now();
+    const diff = Math.floor((now - date.getTime()) / 1000);
+    if (diff < 60) return `${diff} sek siden`;
+    if (diff < 3600) return `${Math.floor(diff / 60)} min siden`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} timer siden`;
+    return `${Math.floor(diff / 86400)} dager siden`;
   };
 
   return (
     <nav className="bg-[#1E3528] text-white flex items-center justify-between py-4 px-10 rounded-[20px] w-full relative shadow-lg">
       {/* Logo */}
-      <div className="text-2xl sm:text-3xl font-bold font-sans hover:text-green-300 transition-colors duration-200">
+      <div className="text-2xl sm:text-3xl font-bold hover:text-green-300 transition-colors duration-200">
         Optinn
       </div>
 
-      {/* Desktop Right Section */}
-      <div className="flex space-x-4 items-center ">
-      {/* Settings Icon */}
-      <FontAwesomeIcon 
-        className="w-4 h-4 md:w-5 md:h-5 cursor-pointer hover:text-green-300 transition-colors duration-200" 
-        icon={faGear} 
-      />
+      {/* Right Section */}
+      <div className="flex space-x-4 items-center">
+        {/* Settings */}
+        <FontAwesomeIcon
+          icon={faGear}
+          className="w-5 h-5 cursor-pointer hover:text-green-300 transition-colors"
+        />
 
-        {/* Varslingsikon med indikator */}
+        {/* Notification Bell */}
         <div className="relative">
           <button
-            className="relative text-white p-1 md:p-2 rounded-lg transition-colors duration-200"
-            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative p-2 rounded-lg"
+            onClick={() => setShowNotifications((s) => !s)}
           >
-            <FontAwesomeIcon 
-              className="w-4 h-4 md:w-5 md:h-5 cursor-pointer hover:text-green-300 transition-colors duration-200" 
-              icon={faBell} 
+            <FontAwesomeIcon
+              icon={faBell}
+              className="w-5 h-5 hover:text-green-300 transition-colors"
             />
             {unreadCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full animate-pulse">
@@ -101,116 +92,137 @@ export default function Navbarwithout() {
             )}
           </button>
 
-          {/* Varslingsdropdown */}
           {showNotifications && (
             <div
               ref={notificationRef}
-              className="absolute right-0 border border-white mt-2 w-80 bg-white text-gray-800 rounded-lg shadow-lg z-50 overflow-hidden"
+              className="absolute right-0 mt-2 w-80 bg-white text-gray-800 rounded-lg shadow-lg z-50 overflow-hidden"
             >
+              {/* Header */}
               <div className="bg-[#1E3528] text-white p-4 flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Varsler</h3>
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-xs flex items-center gap-1 text-white hover:text-gray-300"
+                    className="flex items-center text-xs gap-1 hover:opacity-75"
                   >
-                    <Check className="h-3 w-3" />
+                    <Check className="w-4 h-4" />
                     Marker alle som lest
                   </button>
                 )}
               </div>
 
-              <div className="max-h-80 overflow-y-auto">
+              {/* List */}
+              <div className="max-h-80 overflow-y-auto p-2">
                 {notifications.length > 0 ? (
-                  notifications.map((notification) => (
+                  notifications.map((n) => (
                     <div
-                      key={notification.id}
-                      className="p-4 border-b last:border-0 hover:bg-gray-100 transition-colors"
+                      key={n.id}
+                      className="p-3 border-b last:border-0 hover:bg-gray-100"
                     >
                       <div className="flex items-start gap-2">
-                        <div
-                          className={`w-2 h-2 rounded-full mt-2 ${
-                            notification.priority === "high"
+                        <span
+                          className={`w-2 h-2 rounded-full mt-1 ${
+                            n.priority === "high"
                               ? "bg-red-500"
-                              : notification.priority === "medium"
+                              : n.priority === "medium"
                               ? "bg-amber-500"
                               : "bg-green-500"
                           }`}
                         />
                         <div className="flex-1">
-                          <div className="flex justify-between items-start">
-                            <p className={`text-sm ${!notification.read ? "font-medium" : ""}`}>
-                              {notification.title}
+                          <div className="flex justify-between">
+                            <p className={`text-sm ${!n.read ? "font-medium" : ""}`}>
+                              {n.title}
                             </p>
                             <div className="flex items-center text-gray-500 text-xs">
-                              <Clock className="h-3 w-3 mr-1" />
-                              {formatTimeAgo(notification.timestamp)}
+                              <Clock className="w-4 h-4 mr-1" />
+                              {formatTimeAgo(n.timestamp)}
                             </div>
                           </div>
-                          {notification.description && (
-                            <p className="text-xs text-gray-600">{notification.description}</p>
+                          {n.description && (
+                            <p className="text-xs text-gray-600">{n.description}</p>
                           )}
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="p-6 text-center text-gray-500 text-sm">Ingen varsler å vise</div>
+                  <p className="text-center text-gray-500 py-6">
+                    Ingen varsler å vise
+                  </p>
                 )}
+              </div>
+
+              {/* Footer: Clear all */}
+              <div className="border-t p-3 flex justify-end">
+                <button
+                  onClick={removeAutoNotifications}
+                  className="flex items-center text-sm text-red-600 hover:text-red-800 gap-1"
+                >
+                  <Trash className="w-4 h-4" />
+                  Tøm varsler
+                </button>
               </div>
             </div>
           )}
         </div>
 
-        {/* Profilbilde med dropdown */}
+        {/* Profile */}
         <div className="relative">
-          <div onClick={() => setShowDropdown(!showDropdown)} className="w-10 h-10 overflow-hidden rounded-full cursor-pointer">
-            <Image src={session?.user?.image || "/images/default.profile_pic.jpg"} alt="User Profile" width={50} height={50} />
+          <div
+            onClick={() => setShowDropdown((s) => !s)}
+            className="w-10 h-10 rounded-full overflow-hidden cursor-pointer"
+          >
+            <Image
+              src={session?.user?.image || "/images/default.profile_pic.jpg"}
+              alt="User"
+              width={40}
+              height={40}
+            />
           </div>
           {showDropdown && (
-            <div ref={dropdownRef} className="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-20">
-              <div className="px-4 py-2 font-bold">{session?.user?.name || "User"}</div>
-              <div className="text-sm px-4 pb-2">{session?.user?.email}</div>
-              <button onClick={() => signOut()} className="w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-100">Sign Out</button>
+            <div
+              ref={dropdownRef}
+              className="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-20"
+            >
+              <div className="px-4 py-2 font-bold">
+                {session?.user?.name || "User"}
+              </div>
+              <div className="text-sm px-4 pb-2">
+                {session?.user?.email}
+              </div>
+              <button
+                onClick={() => signOut()}
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+              >
+                Logg ut
+              </button>
             </div>
           )}
         </div>
-      
 
-
-      {/* Mobile Menu Button */}
-      <div className="md:hidden flex items-center space-x-4">
-        <FontAwesomeIcon 
-          className="w-5 h-5 cursor-pointer hover:text-green-300 transition-colors duration-200" 
-          icon={isMobileMenuOpen ? faXmark : faBars} 
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        {/* Mobile Menu Toggle */}
+        <FontAwesomeIcon
+          icon={isMobileMenuOpen ? faXmark : faBars}
+          className="md:hidden w-6 h-6 cursor-pointer hover:text-green-300"
+          onClick={() => setIsMobileMenuOpen((s) => !s)}
         />
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-      <div 
-        ref={mobileMenuRef}
-        className="absolute top-full left-4 right-4 bg-[#1E3528] mt-2 rounded-xl shadow-xl z-50 md:hidden transform transition-all duration-200 ease-in-out"
-      >
-        <div className="p-3 space-y-4">
-          
-         
-
-          {/* Sign Out Button */}
-          <div className="pt-2 border-t border-[#2B4C3A]">
-            <button
-              onClick={() => signOut()} 
-              className="w-full text-white hover:text-red-700 transition-all duration-200 py-2 rounded-lg font-semibold"
-            >
-              Logg ut
-            </button>
-          </div>
+        <div
+          ref={mobileMenuRef}
+          className="absolute top-full left-4 right-4 bg-[#1E3528] mt-2 rounded-xl shadow-lg z-50 p-3 md:hidden"
+        >
+          <button
+            onClick={() => signOut()}
+            className="w-full text-white bg-red-600 rounded-lg py-2 hover:bg-red-700"
+          >
+            Logg ut
+          </button>
         </div>
-      </div>
-    )}
-    </div>
-
+      )}
     </nav>
   );
 }
