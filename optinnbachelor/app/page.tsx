@@ -33,7 +33,7 @@ export default function Home({ searchParams }: { searchParams: {tab:string} }) {
 
   const renderDashboard = () => {
     switch (activeTab) {
-      case 'Generelt':
+      case 'Befolkning':
         return <GenereltDashboard />;
       case 'Helse':
         return <HelseDashboard />;
