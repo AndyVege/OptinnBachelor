@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email({ message: "Ugyldig email" }),
-  password: z.string().min(6, { message: "Passord må inneholde minst 6 tegn" }),
+  password: z.string().min(6, { message: "Ugyldig email eller passord" }),
 });
 
 export default function LoginPage() {
