@@ -2,46 +2,53 @@
 import { useState, useEffect } from "react";
 
 export type Notification = {
-  id: string;           
+  id: string;
   title: string;
   description?: string;
   timestamp: Date;
   read: boolean;
-  priority?: "low"|"medium"|"high";
-  category?: "Vær"|"Helse"|"Generelt";
-  source?: "auto"|"manual";
+  priority?: "low" | "medium" | "high";
+  category?: "Vær" | "Helse" | "Generelt";
+  source?: "auto" | "manual";
 };
 
 export function useNotifications({ pollIntervalMs = 10000 } = {}) {
-  const [notifications, setNotifications] = useState<Notification[]>(() => {
+ 
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+
+  useEffect(() => {
     try {
-      const saved = localStorage.getItem("notifications");
+      const saved = window.localStorage.getItem("notifications");
       if (saved) {
-        return JSON.parse(saved).map((n: any) => ({
+        const parsed: Notification[] = JSON.parse(saved).map((n: any) => ({
           ...n,
           timestamp: new Date(n.timestamp),
         }));
+        setNotifications(parsed);
       }
-    } catch {
-      console.error("Feil ved henting av localStorage");
+    } catch (e) {
+      console.error("Feil ved henting av localStorage:", e);
     }
-    return [];
-  });
+  }, []);
 
   const addNotification = (newAlert: Notification) => {
-    setNotifications(prev =>
-      prev.some(n => n.id === newAlert.id) ? prev : [{ ...newAlert, source: "auto" }, ...prev]
+    setNotifications((prev) =>
+      prev.some((n) => n.id === newAlert.id)
+        ? prev
+        : [{ ...newAlert, source: "auto" }, ...prev]
     );
   };
 
   const removeAutoNotifications = () => {
-    setNotifications(prev => prev.filter(n => n.source !== "auto"));
+    setNotifications((prev) => prev.filter((n) => n.source !== "auto"));
   };
 
   const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
+  // Polling for new weather alerts
   useEffect(() => {
     const fetchWeatherAlert = async () => {
       try {
@@ -71,8 +78,16 @@ export function useNotifications({ pollIntervalMs = 10000 } = {}) {
     return () => clearInterval(interval);
   }, [pollIntervalMs]);
 
+  
   useEffect(() => {
-    localStorage.setItem("notifications", JSON.stringify(notifications));
+    try {
+      window.localStorage.setItem(
+        "notifications",
+        JSON.stringify(notifications)
+      );
+    } catch (e) {
+      console.error("Feil ved lagring til localStorage:", e);
+    }
   }, [notifications]);
 
   return {
