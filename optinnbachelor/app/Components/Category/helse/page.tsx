@@ -1,15 +1,12 @@
 'use client'
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, Legend, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, Legend, BarChart, Bar } from 'recharts';
 import SelectMenu from '../../selectMenu';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPerson, faPersonDress, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { useSession } from "next-auth/react";
 import ClipLoader from 'react-spinners/ClipLoader';
-
-const colorHealth = ['#0E1915', '#2F3E34', '#7DA37A', '#5C8B5E', '#2E3D2F'];
-
 
 const HelseDashboard = () => {
   const { data: session } = useSession();
@@ -50,16 +47,26 @@ const HelseDashboard = () => {
 
       const kommuneId = kommuneMap[selectedKommune] || "0301";
 
-      const [res1, res2] = await Promise.all([
-        fetch(`/api/helseStats?kommune=${kommuneId}&kvartal=${selectedKvartal}`),
-        fetch(`/api/helseStats/sysselsatte?kommune=${kommuneId}`)
-      ]);
+      const year = selectedKvartal.slice(0, 4);
+      const quarters = ['1', '2', '3', '4'];
 
-      const data1 = await res1.json();
-      const data2 = await res2.json();
+      const sykefravarResponses = await Promise.all(
+        quarters.map(q =>
+          fetch(`/api/helseStats?kommune=${kommuneId}&kvartal=${year}${q}`)
+        )
+      );
 
-      setHelseData(data1.sykefravaer || []);
-      setSysselsatteData(data2.sysselsatteHelse || []);
+      const sykefravarDataArrays = await Promise.all(
+        sykefravarResponses.map(res => res.json())
+      );
+
+      const combinedSykefravar = sykefravarDataArrays.flatMap(data => data.sykefravaer || []);
+
+      const sysselsatteResponse = await fetch(`/api/helseStats/sysselsatte?kommune=${kommuneId}`);
+      const sysselsatteDataJson = await sysselsatteResponse.json();
+
+      setHelseData(combinedSykefravar);
+      setSysselsatteData(sysselsatteDataJson.sysselsatteHelse || []);
     } catch (error) {
       console.error("Error fetching helse stats:", error);
     } finally {
@@ -71,11 +78,25 @@ const HelseDashboard = () => {
     fetchData();
   }, [fetchData]);
 
-  const chartData = helseData.map(entry => ({
-    kvartal: entry.kvartal,
-    Menn: entry.antallMenn,
-    Kvinner: entry.antallKvinner
-  }));
+  const chartData = helseData
+    .filter(entry => entry.kvartal.toString().startsWith(selectedKvartal.slice(0,4)))
+    .map(entry => ({
+      kvartal: entry.kvartal,
+      Menn: entry.antallMenn,
+      Kvinner: entry.antallKvinner
+    }))
+    .sort((a, b) => a.kvartal - b.kvartal);
+
+  const singleQuarterData = helseData
+    .filter(entry => entry.kvartal === Number(selectedKvartal))
+    .map(entry => ({
+      kvartal: entry.kvartal,
+      Menn: entry.antallMenn,
+      Kvinner: entry.antallKvinner
+    }));
+
+  const totalMen = singleQuarterData.reduce((sum, curr) => sum + curr.Menn, 0);
+  const totalWomen = singleQuarterData.reduce((sum, curr) => sum + curr.Kvinner, 0);
 
   const sysselsatteGrouped = sysselsatteData.reduce((acc, curr) => {
     const year = curr.år;
@@ -91,14 +112,6 @@ const HelseDashboard = () => {
     Universitetsnivå: levels["03"] || 0
   }));
 
-  const totalMen = chartData.reduce((sum, curr) => sum + curr.Menn, 0);
-  const totalWomen = chartData.reduce((sum, curr) => sum + curr.Kvinner, 0);
-
-  const pieData = [
-    { name: 'Menn', value: totalMen, color: colorHealth[0] },
-    { name: 'Kvinner', value: totalWomen, color: colorHealth[1] }
-  ];
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -109,9 +122,10 @@ const HelseDashboard = () => {
 
   return (
     <div className="py-5 px-4 sm:px-8">
-      
+
       <h2 className="text-center font-extrabold text-2xl sm:text-3xl md:text-4xl">{selectedKommune}</h2>
 
+      {/* Kommune dropdown only on the left */}
       <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-60">
         <SelectMenu
           options={optionsKommune}
@@ -120,41 +134,34 @@ const HelseDashboard = () => {
           selected={selectedKommune}
           setSelected={(val: string | number) => setSelectedKommune(String(val))}
         />
-        <SelectMenu
-          options={optionsKvartal}
-          open={openKvartal}
-          setOpen={setOpenKvartal}
-          selected={selectedKvartal}
-          setSelected={(val: string | number) => setSelectedKvartal(String(val))}
-        />
       </div>
 
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Panels */}
+        {/* Left and center panels */}
         <div className="lg:col-span-2 grid grid-rows-2 gap-6">
-          {/* Sick Leave */}
-          <div className="bg-white rounded-3xl shadow-md w-full p-4 md:p-6">
+          {/* Sykefravær */}
+          <div className="bg-white rounded-3xl shadow-md w-full p-4 md:p-6" style={{ height: 320 }}>
             <div className="relative mb-3">
               <FontAwesomeIcon icon={faCircleInfo} className="absolute right-0 top-0 w-5 h-5" />
               <h2 className="text-center text-2xl md:text-3xl font-extrabold">Sykefravær</h2>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-6">
-              {/* Stats & Area Chart */}
-              <div className="w-full lg:w-1/2">
-                <ResponsiveContainer width="100%" height={180}>
+            {/* AreaChart fills full width, centered */}
+            <div className="flex justify-center w-full h-full">
+              <div style={{ width: '80%', height: '100%' }}>
+                <ResponsiveContainer width="100%" height="90%">
                   <AreaChart data={chartData}>
-                    <XAxis 
-                      dataKey="kvartal" 
+                    <XAxis
+                      dataKey="kvartal"
                       tickFormatter={(kvartal) => {
                         const str = kvartal.toString();
                         const year = str.slice(0, 4);
                         const q = str.slice(4);
                         return `K${q} ${year}`;
-                      }} 
+                      }}
                     />
                     <YAxis tickFormatter={(val) => `${val}%`} domain={[0, 'auto']} hide />
-                    <Tooltip 
+                    <Tooltip
                       formatter={(value: number) => `${value}%`}
                       labelFormatter={(kvartal: number) => {
                         const str = kvartal.toString();
@@ -168,27 +175,6 @@ const HelseDashboard = () => {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-
-              {/* Pie Chart */}
-              <div className="w-full lg:w-1/2 flex justify-center items-center">
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      innerRadius={30}
-                      outerRadius={70}
-                      paddingAngle={3}
-                      dataKey="value"
-                      label={({ name }) => name}
-                    >
-                      {pieData.map((entry, i) => (
-                        <Cell key={i} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
             </div>
           </div>
 
@@ -197,7 +183,6 @@ const HelseDashboard = () => {
             <h2 className="text-center text-2xl md:text-3xl font-extrabold mb-4">Sysselsatte i helse- og sosialnæringer</h2>
             <div className="flex flex-col lg:flex-row gap-6">
               <div className="w-full lg:w-1/2">
-      
                 <ResponsiveContainer width="200%" height={250}>
                   <BarChart data={sysselsatteChartData}>
                     <XAxis dataKey="year" />
@@ -213,8 +198,18 @@ const HelseDashboard = () => {
           </div>
         </div>
 
-        {/* Gender Distribution */}
+        {/* Right panel with kvartal dropdown above kjønnsfordeling */}
         <div className="bg-white rounded-3xl shadow-md p-4 flex flex-col gap-6">
+          <div className="w-full max-w-xs mb-4 pl-2">
+            <SelectMenu
+              options={optionsKvartal}
+              open={openKvartal}
+              setOpen={setOpenKvartal}
+              selected={selectedKvartal}
+              setSelected={(val: string | number) => setSelectedKvartal(String(val))}
+            />
+          </div>
+
           <h2 className="text-center text-2xl md:text-3xl font-extrabold">Kjønnsfordeling</h2>
           <div className="flex mt-20 justify-around items-center">
             <div className="flex items-center gap-2">
@@ -235,8 +230,13 @@ const HelseDashboard = () => {
           </div>
 
           <ResponsiveContainer width="100%" height={500}>
-            <BarChart data={chartData}>
-              <XAxis dataKey="kvartal" />
+            <BarChart data={singleQuarterData}>
+              <XAxis dataKey="kvartal" tickFormatter={(kvartal) => {
+                const str = kvartal.toString();
+                const year = str.slice(0, 4);
+                const q = str.slice(4);
+                return `K${q} ${year}`;
+              }} />
               <Tooltip />
               <Legend />
               <Bar dataKey="Menn" fill="#1E3528" />
@@ -246,7 +246,7 @@ const HelseDashboard = () => {
         </div>
       </div>
     </div>
-  );
+  );  
 };
 
 export default HelseDashboard;
