@@ -105,7 +105,7 @@ useEffect(() => {
 
   return (
     <div className="py-5 px-4 sm:px-8">
-      <h2 className="font-extrabold text-2xl mt-5 sm:text-3xl md:text-4xl">Hello, {session?.user?.name}</h2>
+      <h2 className="font-extrabold text-2xl mt-5 sm:text-3xl md:text-4xl">Hei, {session?.user?.name}</h2>
       <h2 className="text-center font-extrabold text-2xl sm:text-3xl md:text-4xl">{selectedKommune}</h2>
 
 

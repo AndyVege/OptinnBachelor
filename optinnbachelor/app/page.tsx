@@ -8,6 +8,7 @@ import GenereltDashboard from './Components/Category/generelt';
 import HelseDashboard from './Components/Category/helse/page';
 import VærDashboard from './Components/Category/vær/page';
 import MainDashboard from './Components/Category/MainDashboard';
+import UtvidetVarslingsystem from './Components/UtvidetVarslingsystem';
 
 export default function Home({ searchParams }: { searchParams: {tab:string} }) {
   const { status } = useSession();
@@ -38,6 +39,8 @@ export default function Home({ searchParams }: { searchParams: {tab:string} }) {
         return <HelseDashboard />;
       case 'Vær':
         return <VærDashboard />;
+      case 'UtvidetVarslingssystem':
+        return <UtvidetVarslingsystem/>
       default:
         return <MainDashboard />;
     }
