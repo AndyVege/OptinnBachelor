@@ -32,7 +32,7 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
   if (typeof window !== 'undefined' && activeTab) {
     localStorage.setItem('activeTab', activeTab);
   }
