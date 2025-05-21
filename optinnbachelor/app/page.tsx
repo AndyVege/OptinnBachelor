@@ -1,4 +1,5 @@
 'use client'
+console.log("🚀 Rendering Home page");
 export const dynamic = "force-dynamic";
 
 import * as React from 'react'
