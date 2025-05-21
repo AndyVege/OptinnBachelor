@@ -10,7 +10,7 @@ import VærDashboard from './Components/Category/vær/page';
 import MainDashboard from './Components/Category/MainDashboard';
 import UtvidetVarslingsystem from './Components/UtvidetVarslingsystem';
 
-export default function Home({ searchParams }: { searchParams: {tab:string} }) {
+export default function Home({ searchParams }: { searchParams?: { tab?: string } }) {
   const { status } = useSession();
   const router = useRouter();
 
