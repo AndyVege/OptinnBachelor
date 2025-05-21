@@ -214,6 +214,7 @@ const HelseDashboard = () => {
           </div>
 
           <h2 className="text-center text-2xl md:text-3xl font-extrabold">Kjønnsfordeling</h2>
+          <h3 className="text-center text-l md:text-xl">(Sykefravær)</h3>
           <div className="flex mt-20 justify-around items-center">
             <div className="flex items-center gap-2">
               <FontAwesomeIcon icon={faPerson} size="2x" />
