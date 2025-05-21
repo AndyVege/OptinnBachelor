@@ -72,11 +72,11 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
       </div>
 
       {/* Desktop Tabs */}
-      <div className="hidden md:flex w-2/5 h-9 bg-[#366249] p-1 gap-1 justify-between rounded-[8px]">
+      <div className="hidden md:flex w-2/5 h-9 bg-[#366249] p-1 gap-1 justify-between rounded-[12px]">
         {["Befolkning", "Vær", "Helse"].map((tab) => (
           <div
             key={tab}
-            className={`flex-1 font-bold text-center rounded-[8px] cursor-pointer transition-all duration-200 ${
+            className={`flex-1 font-bold text-center rounded-[12px] mx-0.5 p-0.5 cursor-pointer transition-all duration-200 ${
               activeTab === tab
                 ? "bg-white text-green-900 transform scale-105"
                 : "bg-[#366249] opacity-50 hover:opacity-75"
@@ -204,7 +204,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
       {isMobileMenuOpen && (
         <div ref={mobileMenuRef} className="absolute top-full left-4 right-4 bg-[#1E3528] mt-2 rounded-xl shadow-lg z-50 p-3 md:hidden">
           <div className="flex flex-col space-y-2">
-            {["Generelt", "Vær", "Helse"].map((tab) => (
+            {["Befolkning", "Vær", "Helse"].map((tab) => (
               <div
                 key={tab}
                 className={`py-2 text-center rounded-lg cursor-pointer ${
