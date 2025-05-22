@@ -119,8 +119,9 @@ const GenereltDashboard = () => {
   return (
     <div className="py-5 px-4 sm:px-8">
       <div className="pr-[50px]">
-        <h2 className="font-extrabold text-2xl sm:text-3xl md:text-4xl">Hei, {session?.user?.name}</h2>
-        <h2 className="font-extrabold text-center text-2xl sm:text-3xl md:text-4xl">{selectedKommune}</h2>
+        <h1 className="float-left font-extrabold text-2xl sm:text-3xl md:text-4xl">Hei, {session?.user?.name}</h1>
+        <h1 className="float-right font-extrabold text-2xl sm:text-3xl md:text-4xl">{selectedKommune}</h1>
+        <br></br><br></br>
       </div>
       <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-60">
         <SelectMenu
@@ -162,13 +163,13 @@ const GenereltDashboard = () => {
               <div className="w-full lg:w-1/2">
                 <div className="flex justify-around mb-4">
                   <div className="text-center">
-                    <p className="text-sm font-bold">Total Befolkning</p>
-                    <p className="text-xl font-bold">
+                    <h3 className="text-sm font-bold">Total Befolkning</h3>
+                    <h3 className="text-xl font-bold">
                       {thisYearPopulationData?.antallBefolkning?.toLocaleString()}
-                    </p>
+                    </h3>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold">Befolkningsvekst</p>
+                    <h3 className="text-sm font-bold">Befolkningsvekst</h3>
                     {(() => {
                       const prev = Last5YearsPopulation.find(p => p.year === Number(selectedYear) - 1);
                       if (!prev || !thisYearPopulationData) return null;
@@ -177,13 +178,13 @@ const GenereltDashboard = () => {
                         prev.antallBefolkning
                       );
                       return (
-                        <p
+                        <h3
                           className={`text-xl font-bold ${
-                            change < 0 ? 'text-red-500' : 'text-green-500'
+                            change < 0 ? 'text-red-500' : 'text-green-700'
                           }`}
                         >
                           {change.toFixed(1)}% {change < 0 ? '↓' : '↑'}
-                        </p>
+                        </h3>
                       );
                     })()}
                   </div>
@@ -241,13 +242,13 @@ const GenereltDashboard = () => {
               <div className="w-full lg:w-1/2">
                 <div className="flex justify-around mb-4">
                   <div className="text-center">
-                    <p className="text-sm font-bold">Total antall selskaper</p>
-                    <p className="text-xl font-bold">
+                    <h3 className="text-sm font-bold">Total antall selskaper</h3>
+                    <h3 className="text-xl font-bold">
                       {thisYearCompanyData?.antallBedrifter?.toLocaleString()}
-                    </p>
+                    </h3>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold">vekst siden i fjor</p>
+                    <h3 className="text-sm font-bold">vekst siden i fjor</h3>
                     {(() => {
                       const prev = Last5YearsCompany.find(p => p.year === Number(selectedYear) - 1);
                       if (!prev || !thisYearCompanyData) return null;
@@ -256,13 +257,13 @@ const GenereltDashboard = () => {
                         prev.antallBedrifter
                       );
                       return (
-                        <p
+                        <h3
                           className={`text-xl font-bold ${
-                            change < 0 ? 'text-red-500' : 'text-green-500'
+                            change < 0 ? 'text-red-500' : 'text-green-700'
                           }`}
                         >
                           {change.toFixed(1)}% {change < 0 ? '↓' : '↑'}
-                        </p>
+                        </h3>
                       );
                     })()}
                   </div>
@@ -282,9 +283,9 @@ const GenereltDashboard = () => {
               </div>
 
               <div className="w-full lg:w-1/2">
-                <p className="text-center font-semibold mb-2">
+                <h3 className="text-center font-semibold mb-2">
                   Selskaper etter antall ansatte 
-                </p>
+                </h3>
                 <div className="flex items-center">
                   <ResponsiveContainer width="50%" height={180}>
                     <PieChart>
@@ -336,16 +337,16 @@ const GenereltDashboard = () => {
     
           <div className="flex justify-between text-center">
             <div className="w-1/3">
-              <p className="text-xs font-bold">Total Arbeidsledighett</p>
-              <p className="text-lg font-extrabold">20,000</p>
+              <h3 className="text-xs font-bold">Total Arbeidsledighett</h3>
+              <h3 className="text-lg font-extrabold">20,000</h3>
             </div>
             <div className="w-1/3">
-              <p className="text-xs font-bold">Arbeidsledighetsrate</p>
-              <p className="text-lg font-extrabold">18%</p>
+              <h3 className="text-xs font-bold">Arbeidsledighetsrate</h3>
+              <h3 className="text-lg font-extrabold">18%</h3>
             </div>
             <div className="w-1/3">
-              <p className="text-xs font-bold">Endring siden i fjor</p>
-              <p className="text-lg font-extrabold text-green-500">-1.1 ↓</p>
+              <h3 className="text-xs font-bold">Endring siden i fjor</h3>
+              <h3 className="text-lg font-extrabold text-green-700">-1.1 ↓</h3>
             </div>
           </div>
 
@@ -353,16 +354,16 @@ const GenereltDashboard = () => {
             <div className="flex items-center gap-2">
               <FontAwesomeIcon icon={faPerson} size="2x" color='#1E3528'/>
               <div>
-                <p className="font-bold">Menn</p>
-                <p className="text-xl font-extrabold">100000</p>
+                <h3 className="font-bold">Menn</h3>
+                <h3 className="text-xl font-extrabold">100000</h3>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
               <FontAwesomeIcon icon={faPersonDress} size="2x" color="#366249" />
               <div>
-                <p className="font-bold">Kvinner</p>
-                <p className="text-xl font-extrabold">200000</p>
+                <h3 className="font-bold">Kvinner</h3>
+                <h3 className="text-xl font-extrabold">200000</h3>
               </div>
             </div>
           </div>

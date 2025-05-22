@@ -67,7 +67,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   return (
     <nav className="bg-[#1E3528] text-white flex items-center justify-between py-4 px-10 rounded-[20px] w-full relative shadow-lg">
       {/* Logo */}
-      <div className="text-2xl sm:text-3xl font-bold font-sans hover:text-green-300 transition-colors duration-200 cursor-pointer " onClick={()=> setActiveTab('')} >
+      <div className="text-2xl sm:text-3xl font-bold font-sans hover:text-green-300 transition-colors duration-200" onClick={()=> setActiveTab('')} >
         Optinn
       </div>
 
@@ -79,7 +79,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
             className={`flex-1 font-bold text-center rounded-[12px] mx-0.5 p-0.5 cursor-pointer transition-all duration-200 ${
               activeTab === tab
                 ? "bg-white text-green-900 transform scale-105"
-                : "bg-[#366249] opacity-50 hover:opacity-75"
+                : "bg-[#366249] text-white hover:opacity-75"
             }`}
             onClick={() => handleTabClick(tab)}
           >
@@ -101,7 +101,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
           >
             <FontAwesomeIcon icon={faBell} className="w-5 h-5 hover:text-green-300 transition-colors" />
             {unreadCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full animate-pulse">
+              <span className="absolute -top-2 -right-2 bg-red-700 text-white text-[12px] font-bold w-4 h-4 flex items-center justify-center rounded-full animate-pulse">
                 {unreadCount}
               </span>
             )}
